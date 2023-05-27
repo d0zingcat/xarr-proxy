@@ -1,6 +1,8 @@
 package consts
 
 const (
+	VERSION = "v0.1.0"
+
 	LOGO string = ` __   __               _____                     
  \ \ / /              |  __ \                    
   \ V / __ _ _ __ _ __| |__) | __ _____  ___   _ 
@@ -12,6 +14,4 @@ const (
 
 %s Copyright (c) 2023-2023 Build with ❤️ By d0zingcat
 `
-
-	VERSION = "v0.0.1"
 )

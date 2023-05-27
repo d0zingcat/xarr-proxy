@@ -7,12 +7,16 @@ import (
 	"xarr-proxy/internal/config"
 	"xarr-proxy/internal/consts"
 	"xarr-proxy/internal/cron"
+	"xarr-proxy/internal/db"
 	"xarr-proxy/internal/log"
 )
 
 func Init() {
 	cfg := config.Init()
 	log.Init(cfg)
+
+	db.Init(cfg)
+	db.Migrate()
 
 	cron.Init(cfg)
 	cron.StartAsync()

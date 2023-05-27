@@ -8,9 +8,9 @@ type (
 	Config struct {
 		Debug      bool   `json:"debug" env:"DEBUG" envDefault:"false"`
 		ServerPort int    `json:"server_port" env:"SERVER_PORT" envDefault:"8117"`
-		ConfDir    string `json:"config_dir" env:"CONFIG_DIR" envDefault:"tmp/"`
+		ConfDir    string `json:"config_dir" env:"CONFIG_DIR" envDefault:"/config"`
 		DbName     string `json:"db_name" env:"DB_NAME" envDefault:"xarr-proxy.db"`
-		JWTSecret  string `json:"jwt_secret" env:"jwt_secret" envDefault:"secret"`
+		JWTSecret  string `json:"jwt_secret" env:"JWT_SECRET" envDefault:"secret"`
 	}
 )
 

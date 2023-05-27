@@ -55,11 +55,16 @@ func InitMiddleware() {
 }
 
 func InitRoutes() {
-	r.Group(func(r chi.Router) {
-		r.Use(jwtauth.Authenticator)
+	r.Route("/api", func(r chi.Router) {
+		r.Group(func(r chi.Router) {
+			r.Use(jwtauth.Authenticator)
+			r.Get("/auth", func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte("Authorized!"))
+			})
+		})
 	})
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome"))
+		w.Write([]byte("Welcome!"))
 	})
 }
 

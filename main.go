@@ -22,7 +22,7 @@ func Init() {
 }
 
 func main() {
-	fmt.Println(consts.LOGO)
+	fmt.Printf(consts.LOGO, consts.VERSION)
 
 	Init()
 }

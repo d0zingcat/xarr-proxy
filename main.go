@@ -2,18 +2,27 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"xarr-proxy/internal/api"
+	"xarr-proxy/internal/config"
+	"xarr-proxy/internal/consts"
+	"xarr-proxy/internal/cron"
+	"xarr-proxy/internal/log"
 )
 
+func Init() {
+	cfg := config.Init()
+	log.Init(cfg)
+
+	cron.Init(cfg)
+	cron.StartAsync()
+
+	api.Init(cfg)
+	api.Start(cfg)
+}
+
 func main() {
-	fmt.Println("vim-go")
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome"))
-	})
-	http.ListenAndServe(":3000", r)
+	fmt.Println(consts.LOGO)
+
+	Init()
 }

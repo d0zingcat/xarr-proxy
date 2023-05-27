@@ -1,0 +1,515 @@
+[[sonarr]]
+id = "00000000000000000000000000000000"
+token = "title"
+priority = 999
+regex = ".*(\\b|\\s){cleanTitle}(\\b|\\s).*"
+replacement = "{mainTitle}"
+offset = 0
+example = ""
+remark = "🚫🚫🚫🚫🚫"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "21E1CBECBB3A42D29F410EED2AB36330"
+token = "title"
+priority = 2_000
+regex = ".*(Doraemon the Movie Nobita'?s Little Star Wars|哆啦A梦剧场版 大雄的宇宙小战争).*2021.*"
+replacement = "哆啦A梦：大雄的宇宙小战争 2021"
+offset = 0
+example = """
+Doraemon the Movie Nobitas Little Star Wars 2021
+Doraemon the Movie Nobita's Little Star Wars 2021
+哆啦A梦剧场版 大雄的宇宙小战争2021"""
+remark = "哆啦A梦：大雄的宇宙小战争 2021"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "D0424165776B45E4927C698E1FE0E856"
+token = "language"
+priority = 1_100
+regex = ".*(繁简|简繁|简日|日简|繁日|日繁).*"
+replacement = "[$1]"
+offset = 0
+example = """
+xxx繁日xxx
+xxx简日xxx
+xxx繁简xxx
+xxx简繁xxx"""
+remark = "简繁 | 间日 | 繁日"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "32F62461B8124572A53602A4B76BE70A"
+token = "language"
+priority = 1_200
+regex = ".*(简体|簡體|简中|简|(?i)\\bCHS\\b|\\bGB\\b|GB_CN).*"
+replacement = "[简中]"
+offset = 0
+example = """
+xxx简体xxx
+xxx CHS xxx
+xxx簡體xxx
+xxx GB xxx
+xxxGB_CNxxx"""
+remark = "简体 | 簡體 | 简中 | 简 | CHS | GB | GB_CN"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "01616775F99C484CBC6BF79A3FBE513E"
+token = "language"
+priority = 1_300
+regex = ".*(繁体|繁中|繁|(?i)\\bCHT\\b|zh-TW|zh-HK|zh-SG|\\bBIG5\\b).*"
+replacement = "[繁中]"
+offset = 0
+example = """
+xxx繁xxx
+xxx CHT xxx
+xxx cht xxx
+xxxzh-TWxxx
+xxxzh-HKxxx
+xxxzh-SGxxx
+xxx BIG5 xxx"""
+remark = "繁体 | 繁中 | 繁 | CHT | zh-TW | zh-HK | zh-SG | BIG5"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "3D1B02EC745443B9916894D1EEFDF74D"
+token = "resolution"
+priority = 1_100
+regex = ".*((?i)1280X720|720P|\\bSD\\b|标清|\\b720\\b).*"
+replacement = "[720P]"
+offset = 0
+example = """
+xxx 1280X720 xxx
+xxx 720P xxx
+xxx SD xxx
+xxx 标清 xxx
+xxx 720 xxx
+【幻櫻字幕組】【4月新番】【打工吧!魔王大人_Hataraku Maou-sama】【08】【BIG5_MP4】【1280X720】"""
+remark = "1280X720 | 720P| SD | 标清  | 720"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "F0B2B567595B439B9731062453D13D9D"
+token = "resolution"
+priority = 1_000
+regex = ".*((?i)1920X1080|1080P|\\bHD\\b|Full-HD|高清|\\b1080\\b|\\b1K\\b).*"
+replacement = "[1080P]"
+offset = 0
+example = """
+xxx1920X1080xxx
+xxx1080Pxxx
+xxx HD xxx
+xxx高清xxx
+xxx 1080 xxx
+[BDRip_Full-HD_AVC]
+xxx 1K xxx"""
+remark = "1920X1080 | 1080P | HD | Full-HD | 高清 | 1080 | 1K"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "802F223555604889874EE1E918CEEE9F"
+token = "resolution"
+priority = 1_300
+regex = ".*((?i)2560X1440|1440P|\\b2K\\b|\\b1440\\b).*"
+replacement = "[1440P]"
+offset = 0
+example = """
+xxx 2560X1440 xxx
+xxx 1440P xxx
+xxx 2K xxx
+xxx 1440 xxx"""
+remark = "2560X1440 | 1440P | 2K | 1440"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "F0B8685B8BD44A349CD1D71FAD9262E2"
+token = "resolution"
+priority = 1_200
+regex = ".*((?i)3840x2160|2160P|\\b4K\\b|\\bUHD\\b|超高清|\\b2160\\b).*"
+replacement = "[2160P]"
+offset = 0
+example = """
+xxx3840x2160xxx
+xxx2160Pxxx
+xxx 4K xxx
+xxx UHD xxx
+xxx超高清xxx
+xxx 2160 xxx"""
+remark = "3840x2160 | 2160P| 4K | UHD | 超高清 | 2160"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "E44AD59943A64E3587DAA6E60B236BC7"
+token = "quality"
+priority = 2_000
+regex = ".*((?i)\\bSDTV\\b).*"
+replacement = "[SDTV]"
+offset = 0
+example = "xxx SDTV xxx"
+remark = "SDTV"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "CAA6E3718F284B3E9087D25FCC681BA6"
+token = "quality"
+priority = 1_100
+regex = ".*((?i)\\bHDTV\\b).*"
+replacement = "[HDTV]"
+offset = 0
+example = "xxx HDTV xxx"
+remark = "HDTV"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "B8A66E6AFB5D40EDA74A964ADB560DC9"
+token = "quality"
+priority = 1_000
+regex = ".*((?i)\\bWEB.?DL\\b).*"
+replacement = "[WEBDL]"
+offset = 0
+example = """
+xxx WEBDL xxx
+xxx WEB-DL xxx"""
+remark = "WEBDL | WEB-DL"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "0C4678B2749C496480EA805A5112DE52"
+token = "quality"
+priority = 1_000
+regex = ".*((?i)\\bWEB.?RIP\\b).*"
+replacement = "[WEBRip]"
+offset = 0
+example = """
+xxx WEBRip xxx
+xxx WEB-Rip xxx"""
+remark = "WEBRip | WEB-Rip"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "29D8FC56D1A0462B8D158DEE61A9418C"
+token = "quality"
+priority = 1_400
+regex = ".*((?i)\\bRAW.?HD\\b).*"
+replacement = "[Raw-HD]"
+offset = 0
+example = """
+xxx RawHD xxx
+xxx Raw-HD xxx"""
+remark = "RawHD | Raw-HD"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "52A87D6958E848DFA1441E68143EC00C"
+token = "quality"
+priority = 1_500
+regex = ".*((?i)\\bBluray.?Remux\\b).*"
+replacement = "[Bluray-Remux]"
+offset = 0
+example = """
+xxx BlurayRemux xxx
+xxx Bluray-Remux xxx"""
+remark = "BlurayRemux | Bluray-Remux"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "B8CC5016E5F64040B073E768864A017D"
+token = "quality"
+priority = 1_200
+regex = ".*((?i)\\bBlu.?ray\\b).*"
+replacement = "[Bluray]"
+offset = 0
+example = """
+xxx Bluray xxx
+xxx Blu-ray xxx"""
+remark = "Bluray | Blu-ray"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "7318BF3B11FB414892978952883575E5"
+token = "quality"
+priority = 1_300
+regex = ".*((?i)\\bRemux\\b).*"
+replacement = "[Remux]"
+offset = 0
+example = "xxx Remux xxx"
+remark = "Remux"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "52F4F33130AA4A92A3170E048AAAECE6"
+token = "group"
+priority = 1_300
+regex = "^\\s*\\[([^]]+)\\].+"
+replacement = "[-$1]"
+offset = 0
+example = "[group] xxx"
+remark = "[group]"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "B13F8B7DBC31454DB5433882BEC6673C"
+token = "group"
+priority = 1_400
+regex = "^\\s*【([^】]+)】.+"
+replacement = "[-$1]"
+offset = 0
+example = "【group】xxx"
+remark = "【group】"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "ECE3FC67F60647B4BF025476E3BE31A2"
+token = "group"
+priority = 1_200
+regex = ".*(\\[|\\(|【|（| )([^\\[\\(【（ ]+(字幕组|字幕組|字幕社|发布组|发布組|汉化组|汉化組|压制组|压制組)).*"
+replacement = "[-$2]"
+offset = 0
+example = """
+[KRL字幕組] xxxxxxxxxxxxx
+[北宇治字幕组] xxxxxxxxxxxxx
+【北宇治字幕组】 xxxxxxxxxxxxx
+xxxxxxxxxxxxx [悠哈璃羽字幕社] xxxxxxxxxxxxx
+[豌豆字幕组&风之圣殿字幕组] xxxxxxxxxxx
+[爱恋字幕社&波子汽水汉化组] xxxxxxxxxxxxx"""
+remark = "字幕组 | 字幕組 | 字幕社 | 发布组 | 发布組 | 汉化组 | 汉化組 | 压制组 | 压制組"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "DED9BE2BB9734B5EBA21CC281AE371C5"
+token = "group"
+priority = 1_100
+regex = ".*\\b(PTerWEB|ADWeb|ANi|GM-Team|Lilith-Raws|LoliHouse|MMSUB|NC-Raws|NaN-Raws|OPFans枫雪动漫|OPFans楓雪動漫|PorterRAWS|SickeClipse|Skymoon-Raws|SweetSub|XK SPIRITS|c.c動漫|喵萌Production|喵萌奶茶屋|猎户不鸽压制|猎户随缘压制|神楽坂 まひろ|离谱Sub|Sakurato)\\b.*"
+replacement = "[-$1]"
+offset = 0
+example = """
+xxx ANi xxx
+xxx GM-Team xxx
+xxx Lilith-Raws xxx
+xxx OPFans楓雪動漫 xxx"""
+remark = "ANi | GM-Team | Lilith-Raws | LoliHouse ......"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "7E5FCBE09C1742649BA223120CCBBD5E"
+token = "language"
+priority = 1_000
+regex = ".*简繁日.*"
+replacement = "[简繁日]"
+offset = 0
+example = "xxx简繁日xxx"
+remark = "简繁日"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "160235AB3F7B4094842F5436F6F42C8F"
+token = "resolution"
+priority = 1_500
+regex = ".*((?i)854X480|480P|\\b480\\b).*"
+replacement = "[480P]"
+offset = 0
+example = """
+xxx854X480xxx
+xxx480Pxxx
+xxx480xxx"""
+remark = "854X480 | 480P | 480"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "9E79CCEC074A4CAD8AC8DE227E398FFC"
+token = "resolution"
+priority = 1_400
+regex = ".*((?i)960X540|540P|\\b540\\b).*"
+replacement = "[540P]"
+offset = 0
+example = """
+xxx960X540xxx
+xxx540Pxxx
+xxx 540 xxx"""
+remark = "960X540 | 540P | 540"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "64EF964B7ED4422AA67893B652BE0D1D"
+token = "resolution"
+priority = 1_600
+regex = ".*((?i)640X360|360P|\\b360\\b).*"
+replacement = "[360P]"
+offset = 0
+example = """
+xxx640X360xxx
+xxx360Pxxx
+xxx 360 xxx"""
+remark = "640X360 | 360P | 360"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "8622CBF30DE5420690637CCA83C0B941"
+token = "dynamic_range"
+priority = 1_000
+regex = ".*\\b((?i)HDR10|HDR|SDR)\\b.*"
+replacement = "[$1]"
+offset = 0
+example = """
+xxx HDR10 xxx
+xxx HDR xxx
+xxx SDR xxx"""
+remark = "HDR10 | HDR | SDR"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "09DD664F333D4B1683CE1EA75B681F10"
+token = "bit"
+priority = 1_000
+regex = ".*\\b((?i)10bit|8bit)s?\\b.*"
+replacement = "[$1]"
+offset = 0
+example = """
+xxx 10bit xxx
+xxx 8bit xxx"""
+remark = "10bit | 8bit"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "1DEDD0BD47074CCFA048F6BE08B2D15D"
+token = "quality"
+priority = 1_600
+regex = ".*((?i)BD.?Rip).*"
+replacement = "[BDRip]"
+offset = 0
+example = """
+xxx BDRip xxx
+xxx BD-Rip xxx
+xxx BD-rip xxx"""
+remark = "BDRip | BD-Rip"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "38B8F077EF4E4DC799166AD8A25FA3A9"
+token = "language"
+priority = 2_000
+regex = ".*\\b(Baha|baha)\\b.*"
+replacement = "[繁中]"
+offset = 0
+example = """
+xxx Baha xxx
+xxx baha xxx"""
+remark = "Baha | baha"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "74BE48EA58B541BBAA7382E377594975"
+token = "group"
+priority = 1_000
+regex = ".*(喵萌奶茶屋&LoliHouse|离谱Sub&DBD-Raws|悠哈璃羽字幕社&LoliHouse|动漫国字幕组&LoliHouse|极影字幕社&ANK-Raws|豌豆字幕组&LoliHouse|SweetSub&LoliHouse).*"
+replacement = "[-$1]"
+offset = 0
+example = """
+xxx喵萌奶茶屋&LoliHousexxx
+xxx离谱Sub&DBD-Rawsxxx
+xxx悠哈璃羽字幕社&LoliHousexxx"""
+remark = "喵萌奶茶屋&LoliHouse | 离谱Sub&DBD-Raws | 悠哈璃羽字幕社&LoliHouse ......"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "117871426A4044BE977420CCE661EC88"
+token = "subtitle"
+priority = 1_000
+regex = ".*(内嵌|内封|外挂).*"
+replacement = "[$1]"
+offset = 0
+example = """
+xxx内嵌xxx
+xxx内封xxx
+xxx外挂xxx"""
+remark = "内嵌 | 内封 | 外挂"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "C8E8B03BFCC34DFBB254C3A7A97067C4"
+token = "year"
+priority = 1_000
+regex = ".*\\b(19[5-9]\\d|20\\d{2})\\b.*"
+replacement = "$1"
+offset = 0
+example = """
+xxx 1950 xxx
+xxx 2099 xxx"""
+remark = "1950 | 2099 ......"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "50221375663F41EE82E48C823A493F1F"
+token = "original"
+priority = 1_000
+regex = "(.+)"
+replacement = "[$1]"
+offset = 0
+example = "Scream 2022 2160p UHD BluRay x265 10bit DoVi mUHD-FRDS"
+remark = "保留所有原始信息"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "7F5E118009F34213B8BFCBD5589A8F5A"
+token = "group"
+priority = 1_500
+regex = ".*(-|@)([a-zA-Z]+)$"
+replacement = "[-$2]"
+offset = 0
+example = """
+Isekai Yakkyoku S1EP06-S1EP07 1080p KKTV WEB-DL H264 AAC-Areskyo@PTHWEB
+Unique Lady 2020 S03 WEB-DL 4K H265 10bit AAC-PTerWEB
+Love Between Fairy and Devil 2022 E01-06 1080p WEB-DL H265 AAC-YYDS
+Eternal Love 2022 S01 E01-E06 1080p WEB-DL H.264 AAC-OurTV
+Love Like The Galaxy 2022 S1E31-E36 1080p WEB-DL H.264 AAC-JKCT"""
+remark = "@group$ | -group$"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "CC8FAC9272334EBDADE2C3BAE33BCBC7"
+token = "language"
+priority = 1_400
+regex = ".*(中文|中字|汉语|(?i)Chinese|zh-CN|\\bCHI\\b).*"
+replacement = "[Chinese]"
+offset = 0
+example = """
+xxx中文xxx
+xxx汉语xxx
+xxxChinesexxx
+xxxzh-CNxxx
+xxx CHI xxx"""
+remark = "中文 | 中字 | 汉语 | Chinese | zh-CN | CHI"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "D606BF155E3943559607BE56C40E3990"
+token = "language"
+priority = 2_100
+regex = ".+(-|@)(ADWeb|PTHWEB|LeagueWEB|PTerWEB)$"
+replacement = "[Chinese]"
+offset = 0
+example = """
+A Record of a Mortal's Journey to Immortality S01 2020 1080p WEB-DL H264 AAC-ADWeb
+Mashle S01E01 2023 1080p CR WEB-DL x264 AAC-AnimeS@ADWeb
+Isekai Yakkyoku S1EP06-S1EP07 1080p KKTV WEB-DL H264 AAC-Areskyo@PTHWEB
+Cang Lan Jue 2022 S01E01-E06 1080p WEB-DL H265 AAC-LeagueWEB"""
+remark = "ADWeb | PTHWEB | LeagueWEB | PTerWEB"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "419DC749C479440185FC8F8E1BDD04EE"
+token = "quality"
+priority = 2_100
+regex = ".*\\b((?i)CAM|HDCAM|TELESYNC|TELECINE|HDTS|HDTC)\\b.*"
+replacement = "[$1]"
+offset = 0
+example = """
+xxx CAM xxx
+xxx TELESYNC xxx
+xxx TELECINE xxx
+xxx HDTS xxx
+xxx HDCAM xxx"""
+remark = "CAM | HDCAM | TELESYNC | TELECINE | HDTS | HDTC"
+author = "LuckyPuppy514"
+

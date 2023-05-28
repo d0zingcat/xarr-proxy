@@ -6,15 +6,17 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
 	"xarr-proxy/internal/config"
+	"xarr-proxy/internal/consts"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth/v5"
-	// "github.com/go-chi/render"
+	"github.com/go-chi/render"
 )
 
 var (
@@ -51,11 +53,21 @@ func InitMiddleware() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	// r.Use(middleware.URLFormat)
-	// r.Use(render.SetContentType(render.ContentTypeJSON))
+	r.Use(render.SetContentType(render.ContentTypeJSON))
 }
 
 func InitRoutes() {
+	workDir, _ := os.Getwd()
+	filesDir := http.Dir(filepath.Join(workDir, consts.STATIC_FILE_DIR))
+	FileServer(r, "/", filesDir)
+
+	// r.Handle("/*",
+	// 	http.StripPrefix("", http.FileServer(http.Dir(consts.STATIC_FILE_DIR))))
 	r.Route("/api", func(r chi.Router) {
+		r.Group(func(r chi.Router) {
+			r.Post("/system/user/login", userLogin)
+			r.Get("/system/user/info", userInfo)
+		})
 		r.Group(func(r chi.Router) {
 			r.Use(jwtauth.Authenticator)
 			r.Get("/auth", func(w http.ResponseWriter, r *http.Request) {
@@ -63,9 +75,9 @@ func InitRoutes() {
 			})
 		})
 	})
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome!"))
-	})
+	// r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	w.Write([]byte("Welcome!"))
+	// })
 }
 
 func Start(cfg *config.Config) {

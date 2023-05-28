@@ -14,4 +14,8 @@ const (
 
 %s Copyright (c) 2023-2023 Build with ❤️ By d0zingcat
 `
+
+	SQL_FILE_DIR        = "resources/sql"
+	CHECKPOINT_FILENAME = "CHECKPOINT"
+	STATIC_FILE_DIR     = "resources/static"
 )

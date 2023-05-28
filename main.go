@@ -16,7 +16,7 @@ func Init() {
 	log.Init(cfg)
 
 	db.Init(cfg)
-	db.Migrate()
+	db.Migrate(cfg)
 
 	cron.Init(cfg)
 	cron.StartAsync()

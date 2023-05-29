@@ -3,8 +3,14 @@ A proxy layer for sonarr or something.
 
 Inspired by [Jproxy](https://github.com/LuckyPuppy514/jproxy).
 
-The differences between XarrProxy and Jproxy:
-- XarrProxy uses golang while Jproxy uses java.
+## Why invent wheel?
+- Not quite familiar with Java/Spring yet
+- Java takes too much memory, epecially for homelab
+- Just for fun
+
+## The differences between XarrProxy and Jproxy:
+- XarrProxy partially supports the frontend UI, as I only implemented qbittorrent, sonarr and prowlarr.
+- XarrProxy is written in golang while Jproxy uses java.
 - XarrProxy uses toml to manage configs while Jproxy uses JSON.
 - XarrProxy uses bcrypto to handle login/password encryption while Jproxy uses md5.
 

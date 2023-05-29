@@ -1,5 +1,8 @@
 package consts
 
+// Key to use when setting the user info
+type ctxKeySystemUserInfo int
+
 const (
 	VERSION = "v0.1.0"
 
@@ -15,7 +18,8 @@ const (
 %s Copyright (c) 2023-2023 Build with ❤️ By d0zingcat
 `
 
-	SQL_FILE_DIR        = "resources/sql"
-	CHECKPOINT_FILENAME = "CHECKPOINT"
-	STATIC_FILE_DIR     = "resources/static"
+	SQL_FILE_DIR                             = "resources/sql"
+	CHECKPOINT_FILENAME                      = "CHECKPOINT"
+	STATIC_FILE_DIR                          = "resources/static"
+	USER_INFO_CTX_KEY   ctxKeySystemUserInfo = 0
 )

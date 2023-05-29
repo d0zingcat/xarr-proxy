@@ -513,3 +513,38 @@ xxx HDCAM xxx"""
 remark = "CAM | HDCAM | TELESYNC | TELECINE | HDTS | HDTC"
 author = "LuckyPuppy514"
 
+[[sonarr]]
+id = "4908D4EACB8C429DB9A3B80689237846"
+token = "title"
+priority = 998
+regex = ".*\\b((?i)Fear the Walking Dead)\\b.*"
+replacement = "Fear the Walking Dead"
+offset = 0
+example = "Fear the Walking Dead"
+remark = "Fear the Walking Dead"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "5861E3CA144B4FCB8970F7798FACB362"
+token = "episode"
+priority = 1_500
+regex = ".*\\[0*(\\d{1,3}|1[0-8]\\d{2}) (of|OF) \\d+\\].*"
+replacement = "$1"
+offset = 0
+example = """
+[07 of 12]
+[07 OF 12]"""
+remark = "[01 of 12] | [07 OF 12]"
+author = "LuckyPuppy514"
+
+[[sonarr]]
+id = "C336520E8B0E4D9F8315A745D91E78EC"
+token = "language"
+priority = 3_100
+regex = ".*智械尚未危机制作.*异世界一击无双姐姐.*"
+replacement = "[简中]"
+offset = 0
+example = "【智械尚未危机制作】Isekai One Turn Kill Neesan 异世界一击无双姐姐 ～和姐姐一起开始异世界生活～ - 07 (1920x1080 AVC AAC MKV)"
+remark = "智械尚未危机制作"
+author = "LuckyPuppy514"
+

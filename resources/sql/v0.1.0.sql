@@ -45,8 +45,8 @@ INSERT INTO system_user
 VALUES
 (
    1,
-   'jproxy',
-   '765EB35667C4323E7CCB88C94C223202',
+   'admin',
+   '$2a$10$xhVU1OSlpByMmhdWgoV2reOj.18OeQMRYH0bDL.h9kARyFEwodjou',
    'admin'
 );
 --rollback DELETE FROM system_user;

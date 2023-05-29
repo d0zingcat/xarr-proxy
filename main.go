@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"xarr-proxy/internal/api"
+	"xarr-proxy/internal/auth"
+	"xarr-proxy/internal/cache"
 	"xarr-proxy/internal/config"
 	"xarr-proxy/internal/consts"
 	"xarr-proxy/internal/cron"
@@ -17,6 +19,10 @@ func Init() {
 
 	db.Init(cfg)
 	db.Migrate(cfg)
+
+	cache.Init(cfg)
+
+	auth.Init(cfg)
 
 	cron.Init(cfg)
 	cron.StartAsync()

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"xarr-proxy/internal/consts"
 	"xarr-proxy/internal/utils"
@@ -20,6 +21,7 @@ type systemConfig struct{}
 
 func (*systemConfig) Version() string {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", consts.AUTHOR, consts.REPO)
+	version := strings.Replace(consts.VERSION, "v", "", 1)
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Err(err).Msg("fail to get latest release info")
@@ -34,11 +36,11 @@ func (*systemConfig) Version() string {
 	}
 	if data["tag_name"] != nil {
 		v := data["tag_name"].(string)
-		if v != consts.VERSION {
-			return consts.VERSION + " 🚨"
+		if v != version {
+			return version + " 🚨"
 		}
 	}
-	return consts.VERSION
+	return version
 }
 
 func (*systemConfig) AuthorList() []string {

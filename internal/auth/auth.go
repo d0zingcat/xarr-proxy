@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -41,7 +40,6 @@ func SignJWT(cfg *config.Config, id int, username, role string, validStatus int)
 
 func GetUserInfo(r *http.Request) (int, string, string, int) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
-	fmt.Println(claims)
 	userId := int(claims["user_id"].(float64))
 	username := claims["username"].(string)
 	role := claims["role"].(string)

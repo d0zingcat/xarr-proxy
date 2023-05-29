@@ -53,6 +53,9 @@ func InitRoutes() {
 			r.Use(MiddlewareUserInfoInjection)
 
 			r.Get("/system/user/info", userInfo)
+
+			r.Get("/system/config/version", systemVersion)
+			r.Get("/system/config/author/list", authorList)
 		})
 	})
 }

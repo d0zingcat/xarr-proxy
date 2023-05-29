@@ -4,8 +4,6 @@ package consts
 type ctxKeySystemUserInfo int
 
 const (
-	VERSION = "v0.1.0"
-
 	LOGO string = ` __   __               _____                     
  \ \ / /              |  __ \                    
   \ V / __ _ _ __ _ __| |__) | __ _____  ___   _ 
@@ -18,8 +16,14 @@ const (
 %s Copyright (c) 2023-2023 Build with ❤️ By d0zingcat
 `
 
-	SQL_FILE_DIR                             = "resources/sql"
-	CHECKPOINT_FILENAME                      = "CHECKPOINT"
-	STATIC_FILE_DIR                          = "resources/static"
-	USER_INFO_CTX_KEY   ctxKeySystemUserInfo = 0
+	VERSION = "v0.1.0"
+	AUTHOR  = "d0zingcat"
+	REPO    = "xarr-proxy"
+
+	SQL_FILE_DIR        = "resources/sql"
+	CHECKPOINT_FILENAME = "CHECKPOINT"
+	STATIC_FILE_DIR     = "resources/static"
+	RULE_FILE_DIR       = "resources/rule"
+
+	USER_INFO_CTX_KEY ctxKeySystemUserInfo = 0
 )

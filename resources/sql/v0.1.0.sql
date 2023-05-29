@@ -46,7 +46,7 @@ VALUES
 (
    1,
    'admin',
-   '$2a$10$xhVU1OSlpByMmhdWgoV2reOj.18OeQMRYH0bDL.h9kARyFEwodjou',
+   '$2a$10$Zx7t2whluH8qmn6iFdaivuPa8LbJMhZUkg0MkipJ9RL3MPQ.B.3MS',
    'admin'
 );
 --rollback DELETE FROM system_user;

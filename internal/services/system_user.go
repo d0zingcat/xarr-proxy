@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"strings"
 
 	"xarr-proxy/internal/auth"
 	"xarr-proxy/internal/config"
@@ -15,6 +16,7 @@ var SystemUser = &systemUserService{}
 type systemUserService struct{}
 
 func (*systemUserService) Login(username, password string) (string, error) {
+	password = strings.ToLower(password)
 	pass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err

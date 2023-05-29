@@ -27,13 +27,13 @@ func userLogin(w http.ResponseWriter, r *http.Request) {
 	req := new(req.SystemUserLoginReq)
 	if err := render.Bind(r, req); err != nil {
 		userWrongPassCnt++
-		render.Render(w, r, ErrInvalidRequest(err))
+		render.JSON(w, r, ErrInvalidRequest(err))
 		return
 	}
 	token, err := services.SystemUser.Login(req.Username, req.Password)
 	if token == "" || err != nil {
 		userWrongPassCnt++
-		render.Render(w, r, ErrInvalidRequest(err))
+		render.JSON(w, r, ErrInvalidRequest(err))
 		return
 	}
 	w.WriteHeader(http.StatusOK)

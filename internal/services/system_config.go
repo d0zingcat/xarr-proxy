@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"xarr-proxy/internal/consts"
+	"xarr-proxy/internal/db"
+	"xarr-proxy/internal/model"
 	"xarr-proxy/internal/utils"
 
 	"github.com/pelletier/go-toml/v2"
@@ -60,4 +62,13 @@ func (*systemConfig) AuthorList() []string {
 		return configAuthorList["author"]
 	}
 	return authorList
+}
+
+func (*systemConfig) ConfigQuery() []model.SystemConfig {
+	configs := make([]model.SystemConfig, 0)
+	if err := db.Get().Find(&configs, "valid_status IS NOT NULL").Error; err != nil {
+		log.Err(err).Msg("fail to query system config")
+		return configs
+	}
+	return configs
 }

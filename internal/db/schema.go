@@ -1,6 +1,10 @@
 package db
 
-import "time"
+import (
+	"time"
+
+	"xarr-proxy/internal/model"
+)
 
 type (
 	BaseModel struct {
@@ -9,10 +13,13 @@ type (
 		UpdateTime *time.Time `json:"update_time"`
 	}
 	SystemUser struct {
-		BaseModel
-		Username    string `json:"username"`
-		Password    string `json:"password"`
-		Role        string `json:"role"`
-		ValidStatus int    `json:"valid_status"`
+		model.SystemUser
+		Password   string     `json:"password"`
+		CreateTime *time.Time `json:"create_time"`
+		UpdateTime *time.Time `json:"update_time"`
+	}
+
+	SystemConfig struct {
+		model.SystemConfig
 	}
 )

@@ -17,3 +17,9 @@ func authorList(w http.ResponseWriter, r *http.Request) {
 	v := services.SystemConfig.AuthorList()
 	render.JSON(w, r, v)
 }
+
+func configQuery(w http.ResponseWriter, r *http.Request) {
+	// TODO: sonar rename task
+	v := services.SystemConfig.ConfigQuery()
+	render.JSON(w, r, v)
+}

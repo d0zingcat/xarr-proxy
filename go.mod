@@ -26,6 +26,7 @@ require (
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/jinzhu/copier v0.3.5 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.1 // indirect

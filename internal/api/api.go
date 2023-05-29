@@ -56,6 +56,7 @@ func InitRoutes() {
 
 			r.Get("/system/config/version", systemVersion)
 			r.Get("/system/config/author/list", authorList)
+			r.Get("/system/config/query", configQuery)
 		})
 	})
 }

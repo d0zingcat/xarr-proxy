@@ -6,6 +6,8 @@ import (
 
 	"xarr-proxy/internal/api/req"
 	"xarr-proxy/internal/consts"
+	"xarr-proxy/internal/helper"
+	"xarr-proxy/internal/model"
 	"xarr-proxy/internal/services"
 
 	"github.com/go-chi/render"
@@ -36,8 +38,14 @@ func userLogin(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, ErrInvalidRequest(err))
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(token))
+	render.JSON(w, r, token)
+}
+
+func userLogout(w http.ResponseWriter, r *http.Request) {
+	token := helper.ExtractToken(r)
+	userInfo := r.Context().Value(consts.USER_INFO_CTX_KEY).(model.SystemUser)
+	data := services.SystemUser.Logout(userInfo, token)
+	render.JSON(w, r, data)
 }
 
 func userInfo(w http.ResponseWriter, r *http.Request) {

@@ -27,7 +27,7 @@ func GetVerifier() *jwtauth.JWTAuth {
 
 func SignJWT(cfg *config.Config, id int, username, role string, validStatus int) (string, error) {
 	token, _, err := Issue(cfg, map[string]any{
-		"user_id":      id,
+		"id":           id,
 		"username":     username,
 		"role":         role,
 		"valid_status": validStatus,
@@ -40,7 +40,7 @@ func SignJWT(cfg *config.Config, id int, username, role string, validStatus int)
 
 func GetUserInfo(r *http.Request) (int, string, string, int) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
-	userId := int(claims["user_id"].(float64))
+	userId := int(claims["id"].(float64))
 	username := claims["username"].(string)
 	role := claims["role"].(string)
 	validStatus := int(claims["valid_status"].(float64))

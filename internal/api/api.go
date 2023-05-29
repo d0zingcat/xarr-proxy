@@ -11,8 +11,10 @@ import (
 	"time"
 
 	"xarr-proxy/internal/auth"
+	"xarr-proxy/internal/cache"
 	"xarr-proxy/internal/config"
 	"xarr-proxy/internal/consts"
+	"xarr-proxy/internal/helper"
 	"xarr-proxy/internal/model"
 
 	"github.com/go-chi/chi/v5"
@@ -53,6 +55,7 @@ func InitRoutes() {
 			r.Use(MiddlewareUserInfoInjection)
 
 			r.Get("/system/user/info", userInfo)
+			r.Post("/system/user/logout", userLogout)
 
 			r.Get("/system/config/version", systemVersion)
 			r.Get("/system/config/author/list", authorList)
@@ -141,6 +144,13 @@ func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
 // middleware extract user info from token and format to a valid system user model
 func MiddlewareUserInfoInjection(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		token := helper.ExtractToken(r)
+		_, flag := cache.Get().Get(token)
+		if flag {
+			// token is in blacklist
+			render.Render(w, r, ErrInvalidRequest(fmt.Errorf("token is invalid")))
+			return
+		}
 		ctx := r.Context()
 		id, username, role, validStatus := auth.GetUserInfo(r)
 		userInfo := model.SystemUser{

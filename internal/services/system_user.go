@@ -2,11 +2,15 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"strings"
+	"time"
 
 	"xarr-proxy/internal/auth"
+	"xarr-proxy/internal/cache"
 	"xarr-proxy/internal/config"
 	"xarr-proxy/internal/db"
+	"xarr-proxy/internal/model"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -41,5 +45,8 @@ func (*systemUserService) Login(username, password string) (string, error) {
 func (*systemUserService) UserInfo() {
 }
 
-func (*systemUserService) Logout() {
+func (*systemUserService) Logout(userInfo model.SystemUser, token string) bool {
+	cache.Get().Set(token, true, time.Second*time.Duration(config.Get().TokenBlockTTL))
+	fmt.Println(cache.Get().Items())
+	return true
 }

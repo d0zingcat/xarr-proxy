@@ -12,6 +12,7 @@ type (
 		DbName             string `json:"db_name" env:"DB_NAME" envDefault:"xarr-proxy.db"`
 		JWTSecret          string `json:"jwt_secret" env:"JWT_SECRET" envDefault:"secret"`
 		TokenTTL           int    `json:"token_ttl" env:"TOKEN_TTL" envDefault:"3600"`
+		TokenBlockTTL      int    `json:"token_block_ttl" env:"TOKEN_BLOCK_TTL" envDefault:"604800"`
 		CacheTTL           int    `json:"cache_expire" env:"CACHE_EXPIRE" envDefault:"300"`
 		CachePurgeInterval int    `json:"cache_purge_interval" env:"CACHE_PURGE_INTERVAL" envDefault:"600"`
 	}
@@ -26,6 +27,7 @@ var (
 	DbName             string
 	JWTSecret          string
 	TokenTTL           int
+	TokenBlockTTL      int
 	CacheTTL           int
 	CachePurgeInterval int
 )
@@ -45,6 +47,7 @@ func Init() *Config {
 	TokenTTL = cfg.TokenTTL
 	CacheTTL = cfg.CacheTTL
 	CachePurgeInterval = cfg.CachePurgeInterval
+	TokenBlockTTL = cfg.TokenBlockTTL
 
 	return cfg
 }

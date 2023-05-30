@@ -5,7 +5,7 @@ Inspired by [Jproxy](https://github.com/LuckyPuppy514/jproxy).
 
 ## Why invent wheel?
 - Not quite familiar with Java/Spring yet
-- Java takes too much memory, epecially for homelab
+- Java consumes too much memory, epecially for homelab
 - Just for fun
 
 ## The differences between XarrProxy and Jproxy:

@@ -28,16 +28,16 @@ func (*systemUserService) generatePass(password string) (string, error) {
 	return string(pass), err
 }
 
+func (*systemUserService) comparePass(hash, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(strings.ToLower(password)))
+}
+
 func (s *systemUserService) Login(username, password string) (string, error) {
-	pass, err := s.generatePass(password)
-	if err != nil {
-		return "", err
-	}
 	user := new(db.SystemUser)
-	if err := db.Get().First(&user, "username = ?", username, pass).Error; err != nil {
+	if err := db.Get().First(&user, "username = ?", username).Error; err != nil {
 		return "", err
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	if err := s.comparePass(user.Password, password); err != nil {
 		return "", err
 	}
 	if user.ValidStatus == 0 {
@@ -61,12 +61,10 @@ func (s *systemUserService) Update(userInfo model.SystemUser, username, password
 	if err != nil {
 		return false, err
 	}
-	if err := db.Get().Model(&userInfo).Where("id =?", userInfo.Id).Updates(&db.SystemUser{
-		SystemUser: model.SystemUser{
-			Username: username,
-		},
-		Password: pass,
-	}).Error; err != nil {
+	user := &db.SystemUser{}
+	user.Username = username
+	user.Password = pass
+	if err := db.Get().Model(&userInfo).Where("id =?", userInfo.Id).Updates(map[string]any{"username": username, "password": pass}).Error; err != nil {
 		return false, err
 	}
 	return true, nil

@@ -23,3 +23,9 @@ func configQuery(w http.ResponseWriter, r *http.Request) {
 	v := services.SystemConfig.ConfigQuery()
 	render.JSON(w, r, v)
 }
+
+func configUpdate(w http.ResponseWriter, r *http.Request) {
+	v := services.SystemConfig.ConfigUpdate()
+	// TODO: clear title sync cache
+	render.JSON(w, r, v)
+}

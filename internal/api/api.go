@@ -34,7 +34,6 @@ func Init(cfg *config.Config) *chi.Mux {
 
 	workDir, _ := os.Getwd()
 	filesDir := filepath.Join(workDir, consts.STATIC_FILE_DIR)
-	fmt.Println(filesDir)
 	InitRoutes(filesDir)
 	InitErrorHandlers(filesDir)
 	return r
@@ -44,6 +43,27 @@ func InitRoutes(filesDir string) {
 	r.Get("/", func(resp http.ResponseWriter, req *http.Request) {
 		http.ServeFile(resp, req, filesDir+"/index.html")
 	})
+	apiRoute := chi.NewRouter()
+	apiRoute.Group(func(r chi.Router) {
+		r.Post("/system/user/login", userLogin)
+	})
+	apiRoute.Group(func(r chi.Router) {
+		// jwt auth
+		r.Use(jwtauth.Verifier(auth.GetVerifier()))
+		r.Use(jwtauth.Authenticator)
+		r.Use(MiddlewareUserInfoInjection)
+
+		r.Get("/system/user/info", userInfo)
+		r.Post("/system/user/logout", userLogout)
+		r.Post("/system/user/update", userUpdate)
+
+		r.Get("/system/config/version", systemVersion)
+		r.Get("/system/config/author/list", authorList)
+		r.Get("/system/config/query", configQuery)
+		r.Post("/system/config/update", configUpdate)
+	})
+	r.Mount("/api", apiRoute)
+	// httpDir := http.Dir(filesDir)
 	// httpDir := http.Dir(filesDir)
 	// FileServer(r, "/", httpDir)
 	// // for vue spa
@@ -65,24 +85,26 @@ func InitRoutes(filesDir string) {
 	// legacy static file server, just for a backup
 	// r.Handle("/*",
 	// 	http.StripPrefix("", http.FileServer(http.Dir(consts.STATIC_FILE_DIR))))
-	apiRoute := chi.NewRouter()
-	apiRoute.Group(func(r chi.Router) {
-		r.Post("/system/user/login", userLogin)
-	})
-	apiRoute.Group(func(r chi.Router) {
-		// jwt auth
-		r.Use(jwtauth.Verifier(auth.GetVerifier()))
-		r.Use(jwtauth.Authenticator)
-		r.Use(MiddlewareUserInfoInjection)
-
-		r.Get("/system/user/info", userInfo)
-		r.Post("/system/user/logout", userLogout)
-
-		r.Get("/system/config/version", systemVersion)
-		r.Get("/system/config/author/list", authorList)
-		r.Get("/system/config/query", configQuery)
-	})
-	r.Mount("/api", apiRoute)
+	// FileServer(r, "/", httpDir)
+	// // for vue spa
+	// r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	if r.Method != http.MethodGet {
+	// 		w.WriteHeader(http.StatusMethodNotAllowed)
+	// 		fmt.Fprintln(w, http.StatusText(http.StatusMethodNotAllowed))
+	// 		return
+	// 	}
+	//
+	// 	if strings.HasPrefix(r.URL.Path, "/api") {
+	// 		http.NotFound(w, r)
+	// 		return
+	// 	}
+	//
+	// 	http.ServeFile(w, r, string(filesDir)+"/index.html")
+	// })
+	//
+	// legacy static file server, just for a backup
+	// r.Handle("/*",
+	// 	http.StripPrefix("", http.FileServer(http.Dir(consts.STATIC_FILE_DIR))))
 }
 
 func InitMiddleware() {

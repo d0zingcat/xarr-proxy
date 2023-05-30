@@ -56,3 +56,22 @@ func userInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	render.JSON(w, r, userInfo)
 }
+
+func userUpdate(w http.ResponseWriter, r *http.Request) {
+	userInfo := r.Context().Value(consts.USER_INFO_CTX_KEY)
+	req := new(req.SystemUserLoginReq)
+	if err := render.Bind(r, req); err != nil {
+		render.JSON(w, r, ErrInvalidRequest(err))
+		return
+	}
+	if userInfo == nil {
+		render.JSON(w, r, ErrInvalidRequest(errors.New("invalid user info")))
+		return
+	}
+	data, err := services.SystemUser.Update(userInfo.(model.SystemUser), req.Username, req.Password)
+	if err != nil || !data {
+		render.JSON(w, r, ErrInvalidRequest(err))
+		return
+	}
+	render.JSON(w, r, data)
+}

@@ -24,7 +24,8 @@ type systemConfig struct{}
 func (*systemConfig) Version() string {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", consts.AUTHOR, consts.REPO)
 	version := strings.Replace(consts.VERSION, "v", "", 1)
-	resp, err := http.Get(url)
+	req, _ := http.NewRequest("GET", url, nil)
+	resp, err := utils.GetClient(nil).Do(req)
 	if err != nil {
 		log.Err(err).Msg("fail to get latest release info")
 		return ""
@@ -71,4 +72,8 @@ func (*systemConfig) ConfigQuery() []model.SystemConfig {
 		return configs
 	}
 	return configs
+}
+
+func (*systemConfig) ConfigUpdate() error {
+	return nil
 }

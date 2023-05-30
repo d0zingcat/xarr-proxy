@@ -19,9 +19,17 @@ var SystemUser = &systemUserService{}
 
 type systemUserService struct{}
 
-func (*systemUserService) Login(username, password string) (string, error) {
+func (*systemUserService) generatePass(password string) (string, error) {
 	password = strings.ToLower(password)
 	pass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(pass), err
+}
+
+func (s *systemUserService) Login(username, password string) (string, error) {
+	pass, err := s.generatePass(password)
 	if err != nil {
 		return "", err
 	}
@@ -42,11 +50,24 @@ func (*systemUserService) Login(username, password string) (string, error) {
 	return token, nil
 }
 
-func (*systemUserService) UserInfo() {
-}
-
 func (*systemUserService) Logout(userInfo model.SystemUser, token string) bool {
 	cache.Get().Set(token, true, time.Second*time.Duration(config.Get().TokenBlockTTL))
 	fmt.Println(cache.Get().Items())
 	return true
+}
+
+func (s *systemUserService) Update(userInfo model.SystemUser, username, password string) (bool, error) {
+	pass, err := s.generatePass(password)
+	if err != nil {
+		return false, err
+	}
+	if err := db.Get().Model(&userInfo).Where("id =?", userInfo.Id).Updates(&db.SystemUser{
+		SystemUser: model.SystemUser{
+			Username: username,
+		},
+		Password: pass,
+	}).Error; err != nil {
+		return false, err
+	}
+	return true, nil
 }

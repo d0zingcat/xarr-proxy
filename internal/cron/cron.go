@@ -12,10 +12,10 @@ var s *gocron.Scheduler
 
 func Init(cfg *config.Config) {
 	s = gocron.NewScheduler(time.UTC)
-	Register()
+	Register(s)
 }
 
-func Register() {
+func Register(s *gocron.Scheduler) {
 }
 
 func StartAsync() {

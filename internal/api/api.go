@@ -31,37 +31,58 @@ var (
 func Init(cfg *config.Config) *chi.Mux {
 	r = chi.NewRouter()
 	InitMiddleware()
-	InitErrorHandlers()
-	InitRoutes()
+
+	workDir, _ := os.Getwd()
+	filesDir := filepath.Join(workDir, consts.STATIC_FILE_DIR)
+	fmt.Println(filesDir)
+	InitRoutes(filesDir)
+	InitErrorHandlers(filesDir)
 	return r
 }
 
-func InitRoutes() {
-	workDir, _ := os.Getwd()
-	filesDir := http.Dir(filepath.Join(workDir, consts.STATIC_FILE_DIR))
-	FileServer(r, "/", filesDir)
-
+func InitRoutes(filesDir string) {
+	r.Get("/", func(resp http.ResponseWriter, req *http.Request) {
+		http.ServeFile(resp, req, filesDir+"/index.html")
+	})
+	// httpDir := http.Dir(filesDir)
+	// FileServer(r, "/", httpDir)
+	// // for vue spa
+	// r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	if r.Method != http.MethodGet {
+	// 		w.WriteHeader(http.StatusMethodNotAllowed)
+	// 		fmt.Fprintln(w, http.StatusText(http.StatusMethodNotAllowed))
+	// 		return
+	// 	}
+	//
+	// 	if strings.HasPrefix(r.URL.Path, "/api") {
+	// 		http.NotFound(w, r)
+	// 		return
+	// 	}
+	//
+	// 	http.ServeFile(w, r, string(filesDir)+"/index.html")
+	// })
+	//
 	// legacy static file server, just for a backup
 	// r.Handle("/*",
 	// 	http.StripPrefix("", http.FileServer(http.Dir(consts.STATIC_FILE_DIR))))
-	r.Route("/api", func(r chi.Router) {
-		r.Group(func(r chi.Router) {
-			r.Post("/system/user/login", userLogin)
-		})
-		r.Group(func(r chi.Router) {
-			// jwt auth
-			r.Use(jwtauth.Verifier(auth.GetVerifier()))
-			r.Use(jwtauth.Authenticator)
-			r.Use(MiddlewareUserInfoInjection)
-
-			r.Get("/system/user/info", userInfo)
-			r.Post("/system/user/logout", userLogout)
-
-			r.Get("/system/config/version", systemVersion)
-			r.Get("/system/config/author/list", authorList)
-			r.Get("/system/config/query", configQuery)
-		})
+	apiRoute := chi.NewRouter()
+	apiRoute.Group(func(r chi.Router) {
+		r.Post("/system/user/login", userLogin)
 	})
+	apiRoute.Group(func(r chi.Router) {
+		// jwt auth
+		r.Use(jwtauth.Verifier(auth.GetVerifier()))
+		r.Use(jwtauth.Authenticator)
+		r.Use(MiddlewareUserInfoInjection)
+
+		r.Get("/system/user/info", userInfo)
+		r.Post("/system/user/logout", userLogout)
+
+		r.Get("/system/config/version", systemVersion)
+		r.Get("/system/config/author/list", authorList)
+		r.Get("/system/config/query", configQuery)
+	})
+	r.Mount("/api", apiRoute)
 }
 
 func InitMiddleware() {
@@ -72,10 +93,23 @@ func InitMiddleware() {
 	// r.Use(render.SetContentType(render.ContentTypeJSON))
 }
 
-func InitErrorHandlers() {
+func InitErrorHandlers(filesDir string) {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(404)
-		w.Write([]byte("{\"code\":-1,\"message\":\"route does not exist\"}"))
+		if r.Method != http.MethodGet {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			fmt.Fprintln(w, http.StatusText(http.StatusMethodNotAllowed))
+			return
+		}
+		// if strings.HasPrefix(r.URL.Path, "/api") {
+		// 	http.NotFound(w, r)
+		// 	return
+		// }
+		if err := tryRead(filesDir, r.URL.Path, w); err == nil {
+			return
+		}
+		if err := tryRead(filesDir, "/index.html", w); err != nil {
+			panic(err)
+		}
 	})
 	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405)

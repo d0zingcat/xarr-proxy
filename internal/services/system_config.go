@@ -13,6 +13,7 @@ import (
 	"xarr-proxy/internal/utils"
 
 	"github.com/pelletier/go-toml/v2"
+	"github.com/samber/lo"
 
 	"github.com/rs/zerolog/log"
 )
@@ -74,6 +75,87 @@ func (*systemConfig) ConfigQuery() []model.SystemConfig {
 	return configs
 }
 
-func (*systemConfig) ConfigUpdate() error {
+func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.SystemConfig) error {
+	configMap := lo.Reduce(configs, func(agg map[string]*model.SystemConfig, item model.SystemConfig, index int) map[string]*model.SystemConfig {
+		agg[item.Key] = &item
+		return agg
+	}, map[string]*model.SystemConfig{})
+
+	sonarrUrl := configMap["sonarrUrl"]
+	sonarrApiKey := configMap["sonarrApikey"]
+	sonarrIndexerFormat := configMap["sonarrIndexerFormat"]
+	sonarrLanguage1 := configMap["sonarrLanguage1"]
+	sonarrLanguage2 := configMap["sonarrLanguage2"]
+	radarrUrl := configMap["radarrUrl"]
+	radarrApiKey := configMap["radarrApikey"]
+	radarrIndexerFormat := configMap["radarrIndexerFormat"]
+	jackettUrl := configMap["jackettUrl"]
+	prowlarrUrl := configMap["prowlarrUrl"]
+	qbittorrentUrl := configMap["qbittorrentUrl"]
+	qbittorrentUsername := configMap["qbittorrentUsername"]
+	qbittorrentPassword := configMap["qbittorrentPassword"]
+	transmissionUrl := configMap["transmissionUrl"]
+	transmissionUsername := configMap["transmissionUsername"]
+	transmissionPassword := configMap["transmissionPassword"]
+	tmdbUrl := configMap["tmdbUrl"]
+	tmdbApikey := configMap["tmdbApikey"]
+	cleanTitleRegex := configMap["cleanTitleRegex"]
+	ruleSyncAuthors := configMap["ruleSyncAuthors"]
+
+	_ = sonarrLanguage1
+	_ = sonarrLanguage2
+	_ = radarrUrl
+	_ = radarrApiKey
+	_ = radarrIndexerFormat
+	_ = jackettUrl
+	_ = prowlarrUrl
+	_ = qbittorrentUrl
+	_ = qbittorrentUsername
+	_ = qbittorrentPassword
+	_ = transmissionUrl
+	_ = transmissionUsername
+	_ = transmissionPassword
+	_ = tmdbUrl
+	_ = tmdbApikey
+	_ = cleanTitleRegex
+	_ = ruleSyncAuthors
+
+	if Sonarr.CheckHealth(sonarrUrl.Value, sonarrApiKey.Value) {
+		sonarrUrl.ValidStatus = consts.VALID_STATUS
+		sonarrApiKey.ValidStatus = consts.VALID_STATUS
+	} else {
+		sonarrUrl.ValidStatus = consts.INVALID_STATUS
+		sonarrApiKey.ValidStatus = consts.INVALID_STATUS
+	}
+
+	if Sonarr.CheckIndexerFormat(sonarrIndexerFormat.Value) {
+		sonarrIndexerFormat.ValidStatus = consts.VALID_STATUS
+	} else {
+		sonarrIndexerFormat.ValidStatus = consts.INVALID_STATUS
+	}
+
+	if Radarr.CheckHealth(radarrUrl.Value, radarrApiKey.Value) {
+		radarrUrl.ValidStatus = consts.VALID_STATUS
+		radarrApiKey.ValidStatus = consts.VALID_STATUS
+	} else {
+		radarrUrl.ValidStatus = consts.INVALID_STATUS
+		radarrApiKey.ValidStatus = consts.INVALID_STATUS
+	}
+
+	if Qbittorrent.Login(qbittorrentUrl.Value, qbittorrentUsername.Value, qbittorrentPassword.Value) {
+		qbittorrentUrl.ValidStatus = consts.VALID_STATUS
+		qbittorrentUsername.ValidStatus = consts.VALID_STATUS
+		qbittorrentPassword.ValidStatus = consts.VALID_STATUS
+	} else {
+		qbittorrentUrl.ValidStatus = consts.INVALID_STATUS
+		qbittorrentUsername.ValidStatus = consts.INVALID_STATUS
+		qbittorrentPassword.ValidStatus = consts.INVALID_STATUS
+	}
+
+	for _, systemConfig := range configMap {
+		if err := db.Get().Save(&systemConfig).Error; err != nil {
+			return err
+		}
+	}
 	return nil
 }

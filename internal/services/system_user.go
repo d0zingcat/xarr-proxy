@@ -43,7 +43,7 @@ func (s *systemUserService) Login(username, password string) (string, error) {
 	if user.ValidStatus == 0 {
 		return "", errors.New("user invalidated")
 	}
-	token, err := auth.SignJWT(config.Get(), user.Id, user.Username, user.Role, user.ValidStatus)
+	token, err := auth.SignJWT(config.Get(), user.ID, user.Username, user.Role, user.ValidStatus)
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +64,7 @@ func (s *systemUserService) Update(userInfo model.SystemUser, username, password
 	user := &db.SystemUser{}
 	user.Username = username
 	user.Password = pass
-	if err := db.Get().Model(&userInfo).Where("id =?", userInfo.Id).Updates(map[string]any{"username": username, "password": pass}).Error; err != nil {
+	if err := db.Get().Model(&userInfo).Where("id =?", userInfo.ID).Updates(map[string]any{"username": username, "password": pass}).Error; err != nil {
 		return false, err
 	}
 	return true, nil

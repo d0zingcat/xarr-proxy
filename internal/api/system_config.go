@@ -1,8 +1,12 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 
+	"xarr-proxy/internal/api/req"
+	"xarr-proxy/internal/consts"
+	"xarr-proxy/internal/model"
 	"xarr-proxy/internal/services"
 
 	"github.com/go-chi/render"
@@ -25,7 +29,17 @@ func configQuery(w http.ResponseWriter, r *http.Request) {
 }
 
 func configUpdate(w http.ResponseWriter, r *http.Request) {
-	v := services.SystemConfig.ConfigUpdate()
+	userInfo := r.Context().Value(consts.USER_INFO_CTX_KEY)
+	var req req.SystemConfigUpdateReq
+	if err := render.Bind(r, &req); err != nil {
+		render.JSON(w, r, ErrInvalidRequest(err))
+		return
+	}
+	if userInfo == nil {
+		render.JSON(w, r, ErrInvalidRequest(errors.New("invalid user info")))
+		return
+	}
+	v := services.SystemConfig.ConfigUpdate(userInfo.(model.SystemUser), []model.SystemConfig(req))
 	// TODO: clear title sync cache
 	render.JSON(w, r, v)
 }

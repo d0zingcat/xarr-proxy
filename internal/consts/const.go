@@ -20,6 +20,9 @@ const (
 	AUTHOR  = "d0zingcat"
 	REPO    = "xarr-proxy"
 
+	INVALID_STATUS = 0
+	VALID_STATUS   = 1
+
 	SQL_FILE_DIR        = "resources/sql"
 	CHECKPOINT_FILENAME = "CHECKPOINT"
 	STATIC_FILE_DIR     = "resources/static"

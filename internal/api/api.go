@@ -210,7 +210,7 @@ func MiddlewareUserInfoInjection(next http.Handler) http.Handler {
 		ctx := r.Context()
 		id, username, role, validStatus := auth.GetUserInfo(r)
 		userInfo := model.SystemUser{
-			Id:          id,
+			ID:          id,
 			Username:    username,
 			Role:        role,
 			ValidStatus: validStatus,

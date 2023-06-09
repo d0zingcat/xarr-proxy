@@ -29,5 +29,18 @@ func (*sonarr) CheckHealth(url, apiKey string) bool {
 	}
 	body := bytes.NewBuffer(make([]byte, 0))
 	io.Copy(body, resp.Body)
-	return !strings.Contains(body.String(), "Unauthorized")
+	log.Debug().Msgf("%v", body.String())
+	if !strings.Contains(body.String(), "Unauthorized") {
+		return true
+	}
+	return resp.StatusCode == http.StatusOK
+}
+
+func (*sonarr) CheckIndexerFormat(format string) bool {
+	if format == "" {
+		return false
+	}
+	return strings.Contains(format, "{title}") &&
+		strings.Contains(format, "{season}") &&
+		strings.Contains(format, "{episode}")
 }

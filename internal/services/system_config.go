@@ -104,14 +104,8 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 
 	_ = sonarrLanguage1
 	_ = sonarrLanguage2
-	_ = radarrUrl
-	_ = radarrApiKey
-	_ = radarrIndexerFormat
 	_ = jackettUrl
 	_ = prowlarrUrl
-	_ = qbittorrentUrl
-	_ = qbittorrentUsername
-	_ = qbittorrentPassword
 	_ = transmissionUrl
 	_ = transmissionUsername
 	_ = transmissionPassword
@@ -141,6 +135,11 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 		radarrUrl.ValidStatus = consts.INVALID_STATUS
 		radarrApiKey.ValidStatus = consts.INVALID_STATUS
 	}
+	if Radarr.CheckIndexerFormat(radarrIndexerFormat.Value) {
+		radarrIndexerFormat.ValidStatus = consts.VALID_STATUS
+	} else {
+		radarrIndexerFormat.ValidStatus = consts.INVALID_STATUS
+	}
 
 	if Qbittorrent.Login(qbittorrentUrl.Value, qbittorrentUsername.Value, qbittorrentPassword.Value) {
 		qbittorrentUrl.ValidStatus = consts.VALID_STATUS
@@ -150,6 +149,20 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 		qbittorrentUrl.ValidStatus = consts.INVALID_STATUS
 		qbittorrentUsername.ValidStatus = consts.INVALID_STATUS
 		qbittorrentPassword.ValidStatus = consts.INVALID_STATUS
+	}
+
+	if TMDb.CheckHealth(tmdbUrl.Value, tmdbApikey.Value) {
+		tmdbUrl.ValidStatus = consts.VALID_STATUS
+		tmdbApikey.ValidStatus = consts.VALID_STATUS
+	} else {
+		tmdbUrl.ValidStatus = consts.INVALID_STATUS
+		tmdbApikey.ValidStatus = consts.INVALID_STATUS
+	}
+
+	if utils.IsRegex(cleanTitleRegex.Value) {
+		cleanTitleRegex.ValidStatus = consts.VALID_STATUS
+	} else {
+		cleanTitleRegex.ValidStatus = consts.INVALID_STATUS
 	}
 
 	for _, systemConfig := range configMap {

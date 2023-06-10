@@ -29,7 +29,6 @@ func (*radarr) CheckHealth(url, apiKey string) bool {
 	}
 	body := bytes.NewBuffer(make([]byte, 0))
 	io.Copy(body, resp.Body)
-	log.Debug().Msgf("%v", body.String())
 	if strings.Contains(body.String(), "Unauthorized") {
 		return true
 	}

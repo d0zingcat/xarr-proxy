@@ -159,6 +159,18 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 		tmdbApikey.ValidStatus = consts.INVALID_STATUS
 	}
 
+	if Jackett.CheckHealth(jackettUrl.Value) {
+		jackettUrl.ValidStatus = consts.VALID_STATUS
+	} else {
+		jackettUrl.ValidStatus = consts.INVALID_STATUS
+	}
+
+	if Prowlarr.CheckHealth(prowlarrUrl.Value) {
+		prowlarrUrl.ValidStatus = consts.VALID_STATUS
+	} else {
+		prowlarrUrl.ValidStatus = consts.INVALID_STATUS
+	}
+
 	if utils.IsRegex(cleanTitleRegex.Value) {
 		cleanTitleRegex.ValidStatus = consts.VALID_STATUS
 	} else {

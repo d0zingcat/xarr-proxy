@@ -60,7 +60,7 @@ func (i *IndexerFilter) DoFilter(w http.ResponseWriter, r *http.Request) {
 			Any("offsetKey", offsetKey).
 			Any("offsetList", offsetList).
 			Any("index", index).
-			Any("xml", xml[:3000]).Msg("first request")
+			Msg("first request")
 		index++
 		for index < size && indexerRequest.Limit-count > 0 {
 			log.Debug().Msgf("index %v < size %v, limit: %v, count", index, size, indexerRequest.Limit, count)
@@ -92,9 +92,9 @@ func (i *IndexerFilter) DoFilter(w http.ResponseWriter, r *http.Request) {
 		xml = i.Service.ExecuteNewRequest(requestWrapper)
 	}
 	// 处理结果
-	log.Logger.Debug().Msgf("before: %v", xml[:3000])
+	log.Logger.Debug().Msgf("before: %v", xml)
 	xml = i.Service.ExecuteFormatRule(xml)
-	log.Logger.Debug().Msgf("after: %v", xml[:3000])
+	log.Logger.Debug().Msgf("after: %v", xml)
 	// 返回
 	w.Write([]byte(xml))
 }

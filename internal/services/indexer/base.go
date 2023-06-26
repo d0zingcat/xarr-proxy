@@ -1,14 +1,13 @@
 package indexer
 
 import (
+	"encoding/xml"
 	"regexp"
 	"strings"
 
 	"xarr-proxy/internal/api/req"
 	"xarr-proxy/internal/services"
 	"xarr-proxy/internal/utils"
-
-	"github.com/rs/zerolog/log"
 )
 
 type baseIndexer struct{}
@@ -18,7 +17,6 @@ func (b *baseIndexer) GetTitle(key string) string {
 }
 
 func (b *baseIndexer) GetSearchTitle(title string) []string {
-	log.Info().Msg("2222")
 	return []string{}
 }
 
@@ -77,66 +75,94 @@ func (b *baseIndexer) ExecuteNewRequest(requestWrapper *services.RequestWrapper)
 }
 
 type TorznabRss struct {
-	RSS RSS `json:"rss"`
-}
-
-type RSS struct {
-	Channel      Channel `json:"channel"`
-	XmlnsAtom    string  `json:"_xmlns:atom"`
-	XmlnsTorznab string  `json:"_xmlns:torznab"`
-	Version      string  `json:"_version"`
+	XMLName xml.Name `xml:"rss"`
+	Version string   `xml:"version,attr"`
+	Atom    string   `xml:"xmlns:atom,attr"`
+	Torznab string   `xml:"xmlns:torznab,attr"`
+	Channel Channel  `xml:"channel"`
 }
 
 type Channel struct {
-	Link  Link   `json:"link"`
-	Title string `json:"title"`
-	Items []Item `json:"item"`
+	Title    string   `xml:"title"`
+	AtomLink AtomLink `xml:"atom:link"`
+	Items    []Item   `xml:"item"`
+}
+
+type AtomLink struct {
+	Rel  string `xml:"rel,attr"`
+	Type string `xml:"type,attr"`
 }
 
 type Item struct {
-	Title           string          `json:"title"`
-	Description     string          `json:"description"`
-	GUID            string          `json:"guid"`
-	Prowlarrindexer Prowlarrindexer `json:"prowlarrindexer"`
-	Comments        string          `json:"comments"`
-	PubDate         string          `json:"pubDate"`
-	Size            string          `json:"size"`
-	Link            string          `json:"link"`
-	Category        []string        `json:"category"`
-	Enclosure       Enclosure       `json:"enclosure"`
-	Attr            []Attr          `json:"attr"`
-}
-
-type Attr struct {
-	Name   string `json:"_name"`
-	Value  string `json:"_value"`
-	Prefix string `json:"__prefix"`
+	Title       string    `xml:"title"`
+	Description string    `xml:"description"`
+	Guid        string    `xml:"guid"`
+	Prowlarr    string    `xml:"prowlarrindexer"`
+	Comments    string    `xml:"comments"`
+	PubDate     string    `xml:"pubDate"`
+	Size        int       `xml:"size"`
+	Link        string    `xml:"link"`
+	Categories  []int     `xml:"category"`
+	Enclosure   Enclosure `xml:"enclosure"`
 }
 
 type Enclosure struct {
-	URL    string `json:"_url"`
-	Length string `json:"_length"`
-	Type   string `json:"_type"`
+	URL    string `xml:"url,attr"`
+	Length string `xml:"length,attr"`
+	Type   string `xml:"type,attr"`
 }
 
-type Prowlarrindexer struct {
-	ID   string `json:"_id"`
-	Text string `json:"__text"`
-}
-
-type Link struct {
-	Rel    string `json:"_rel"`
-	Type   string `json:"_type"`
-	Prefix string `json:"__prefix"`
-}
-
-const (
-	Category             string = "category"
-	Downloadvolumefactor string = "downloadvolumefactor"
-	Grabs                string = "grabs"
-	Infohash             string = "infohash"
-	Peers                string = "peers"
-	Seeders              string = "seeders"
-	Tag                  string = "tag"
-	Uploadvolumefactor   string = "uploadvolumefactor"
-)
+//
+// type TorznabRss struct {
+// 	RSS RSS `xml:"rss"`
+// }
+//
+// type RSS struct {
+// 	Channel      Channel `xml:"channel"`
+// 	XmlnsAtom    string  `xml:"_xmlns:atom"`
+// 	XmlnsTorznab string  `xml:"_xmlns:torznab"`
+// 	Version      string  `xml:"_version"`
+// }
+//
+// type Channel struct {
+// 	Link  Link   `xml:"link"`
+// 	Title string `xml:"title"`
+// 	Items []Item `xml:"item"`
+// }
+//
+// type Item struct {
+// 	Title           string          `xml:"title"`
+// 	Description     string          `xml:"description"`
+// 	GUID            string          `xml:"guid"`
+// 	Prowlarrindexer Prowlarrindexer `xml:"prowlarrindexer"`
+// 	Comments        string          `xml:"comments"`
+// 	PubDate         string          `xml:"pubDate"`
+// 	Size            string          `xml:"size"`
+// 	Link            string          `xml:"link"`
+// 	Category        []string        `xml:"category"`
+// 	Enclosure       Enclosure       `xml:"enclosure"`
+// 	Attr            []Attr          `xml:"attr"`
+// }
+//
+// type Attr struct {
+// 	Name   string `xml:"_name"`
+// 	Value  string `xml:"_value"`
+// 	Prefix string `xml:"__prefix"`
+// }
+//
+// type Enclosure struct {
+// 	URL    string `xml:"_url"`
+// 	Length string `xml:"_length"`
+// 	Type   string `xml:"_type"`
+// }
+//
+// type Prowlarrindexer struct {
+// 	ID   string `xml:"_id"`
+// 	Text string `xml:"__text"`
+// }
+//
+// type Link struct {
+// 	Rel    string `xml:"_rel"`
+// 	Type   string `xml:"_type"`
+// 	Prefix string `xml:"__prefix"`
+// }

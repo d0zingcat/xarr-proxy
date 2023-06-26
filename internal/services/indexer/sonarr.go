@@ -72,8 +72,7 @@ func (s *sonarrProwlarrIndexer) ExecuteFormatRule(xml string) string {
 	}
 	cleanTitleRegex := services.SystemConfig.MustConfigQueryByKey(consts.CLEAN_TITLE_REGEX)
 	sonarrTitleList, _ := services.Sonarr.QueryAll()
-	root := &x.RSS
-	channel := &root.Channel
+	channel := &x.Channel
 	for i, item := range channel.Items {
 		formatText := services.Sonarr.FormatTitle(item.Title, format, cleanTitleRegex, tokenRuleMap["title"], sonarrTitleList)
 		if strings.Contains(formatText, "{title}") {
@@ -84,12 +83,12 @@ func (s *sonarrProwlarrIndexer) ExecuteFormatRule(xml string) string {
 		log.Debug().Msgf("索引器格式化：%s ==> %s", item.Title, formatText)
 		channel.Items[i].Title = formatText
 	}
-	d, err := xmlUtil.Marshal(x)
+	d, err := xmlUtil.MarshalIndent(x, "", "\t")
 	if err != nil {
 		log.Err(err).Msg("fail to marshal to xml string")
 		return xml
 	}
-	return string(d)
+	return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + string(d)
 }
 
 func (s *sonarrProwlarrIndexer) GetIndexerUrl(path string) string {

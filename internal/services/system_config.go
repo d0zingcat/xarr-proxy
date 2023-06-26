@@ -22,7 +22,7 @@ var SystemConfig = &systemConfig{}
 
 type systemConfig struct{}
 
-func (*systemConfig) Version() string {
+func (*systemConfig) ApiVersion() string {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", consts.AUTHOR, consts.REPO)
 	version := strings.Replace(consts.VERSION, "v", "", 1)
 	req, _ := http.NewRequest("GET", url, nil)
@@ -47,7 +47,7 @@ func (*systemConfig) Version() string {
 	return version
 }
 
-func (*systemConfig) AuthorList() []string {
+func (*systemConfig) ApiAuthorList() []string {
 	authorList := []string{"LuckyPuppy514", "d0zingcat"}
 	configAuthorList := make(map[string][]string)
 	content, err := utils.ReadFile(filepath.Join(consts.RULE_FILE_DIR, "author.toml"))
@@ -66,7 +66,7 @@ func (*systemConfig) AuthorList() []string {
 	return authorList
 }
 
-func (*systemConfig) ConfigQuery() []model.SystemConfig {
+func (*systemConfig) ApiConfigQuery() []model.SystemConfig {
 	configs := make([]model.SystemConfig, 0)
 	if err := db.Get().Find(&configs, "valid_status IS NOT NULL").Error; err != nil {
 		log.Err(err).Msg("fail to query system config")
@@ -75,32 +75,60 @@ func (*systemConfig) ConfigQuery() []model.SystemConfig {
 	return configs
 }
 
-func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.SystemConfig) error {
+func (*systemConfig) ApiGetSonarrRules() []model.Rule {
+	configRuleList := make(map[string][]model.Rule)
+	content, err := utils.ReadFile(filepath.Join(consts.RULE_FILE_DIR, "sonarr.toml"))
+	if err != nil {
+		log.Err(err).Msg("fail to read sonarr.toml")
+		return nil
+	}
+	err = toml.Unmarshal([]byte(content), &configRuleList)
+	if err != nil {
+		log.Err(err).Msg("fail to unmarshal sonarr.toml")
+	}
+	return configRuleList["sonarr"]
+}
+
+func (*systemConfig) ApiGetRadarrRules() []model.Rule {
+	rules := make([]model.Rule, 0)
+	content, err := utils.ReadFile(filepath.Join(consts.RULE_FILE_DIR, "radarr.toml"))
+	if err != nil {
+		log.Err(err).Msg("fail to read radarr.toml")
+		return rules
+	}
+	err = toml.Unmarshal([]byte(content), &rules)
+	if err != nil {
+		log.Err(err).Msg("fail to unmarshal radarr.toml")
+	}
+	return rules
+}
+
+func (*systemConfig) ApiConfigUpdate(userInfo model.SystemUser, configs []model.SystemConfig) error {
 	configMap := lo.Reduce(configs, func(agg map[string]*model.SystemConfig, item model.SystemConfig, index int) map[string]*model.SystemConfig {
 		agg[item.Key] = &item
 		return agg
 	}, map[string]*model.SystemConfig{})
 
-	sonarrUrl := configMap["sonarrUrl"]
-	sonarrApiKey := configMap["sonarrApikey"]
-	sonarrIndexerFormat := configMap["sonarrIndexerFormat"]
-	sonarrLanguage1 := configMap["sonarrLanguage1"]
-	sonarrLanguage2 := configMap["sonarrLanguage2"]
-	radarrUrl := configMap["radarrUrl"]
-	radarrApiKey := configMap["radarrApikey"]
-	radarrIndexerFormat := configMap["radarrIndexerFormat"]
-	jackettUrl := configMap["jackettUrl"]
-	prowlarrUrl := configMap["prowlarrUrl"]
-	qbittorrentUrl := configMap["qbittorrentUrl"]
-	qbittorrentUsername := configMap["qbittorrentUsername"]
-	qbittorrentPassword := configMap["qbittorrentPassword"]
-	transmissionUrl := configMap["transmissionUrl"]
-	transmissionUsername := configMap["transmissionUsername"]
-	transmissionPassword := configMap["transmissionPassword"]
-	tmdbUrl := configMap["tmdbUrl"]
-	tmdbApikey := configMap["tmdbApikey"]
-	cleanTitleRegex := configMap["cleanTitleRegex"]
-	ruleSyncAuthors := configMap["ruleSyncAuthors"]
+	sonarrUrl := configMap[consts.SONARR_URL]
+	sonarrApiKey := configMap[consts.SONARR_API_KEY]
+	sonarrIndexerFormat := configMap[consts.SONARR_INDEXER_FORMAT]
+	sonarrLanguage1 := configMap[consts.SONARR_LANGUAGE_1]
+	sonarrLanguage2 := configMap[consts.SONARR_LANGUAGE_2]
+	radarrUrl := configMap[consts.RADARR_URL]
+	radarrApiKey := configMap[consts.RADARR_API_KEY]
+	radarrIndexerFormat := configMap[consts.RADARR_INDEXER_FORMAT]
+	jackettUrl := configMap[consts.JACKETT_URL]
+	prowlarrUrl := configMap[consts.PROWLARR_URL]
+	qbittorrentUrl := configMap[consts.QBITTORRENT_URL]
+	qbittorrentUsername := configMap[consts.QBITTORRENT_USERNAME]
+	qbittorrentPassword := configMap[consts.QBITTORRENT_PASSWORD]
+	transmissionUrl := configMap[consts.TRANSMISSION_URL]
+	transmissionUsername := configMap[consts.TRANSMISSION_USERNAME]
+	transmissionPassword := configMap[consts.TRANSMISSION_PASSWORD]
+	tmdbUrl := configMap[consts.TMDB_URL]
+	tmdbApikey := configMap[consts.TMDB_API_KEY]
+	cleanTitleRegex := configMap[consts.CLEAN_TITLE_REGEX]
+	ruleSyncAuthors := configMap[consts.RULE_SYNC_AUTHORS]
 
 	_ = sonarrLanguage1
 	_ = sonarrLanguage2
@@ -114,7 +142,7 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 	_ = cleanTitleRegex
 	_ = ruleSyncAuthors
 
-	if Sonarr.CheckHealth(sonarrUrl.Value, sonarrApiKey.Value) {
+	if Sonarr.ExternalCheckHealth(sonarrUrl.Value, sonarrApiKey.Value) == nil {
 		sonarrUrl.ValidStatus = consts.VALID_STATUS
 		sonarrApiKey.ValidStatus = consts.VALID_STATUS
 	} else {
@@ -128,7 +156,7 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 		sonarrIndexerFormat.ValidStatus = consts.INVALID_STATUS
 	}
 
-	if Radarr.CheckHealth(radarrUrl.Value, radarrApiKey.Value) {
+	if Radarr.ExternalCheckHealth(radarrUrl.Value, radarrApiKey.Value) {
 		radarrUrl.ValidStatus = consts.VALID_STATUS
 		radarrApiKey.ValidStatus = consts.VALID_STATUS
 	} else {
@@ -150,22 +178,22 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 		qbittorrentUsername.ValidStatus = consts.INVALID_STATUS
 		qbittorrentPassword.ValidStatus = consts.INVALID_STATUS
 	}
+	// TODO: transmission
 
-	if TMDb.CheckHealth(tmdbUrl.Value, tmdbApikey.Value) {
+	if TMDB.ExternalCheckHealth(tmdbUrl.Value, tmdbApikey.Value) {
 		tmdbUrl.ValidStatus = consts.VALID_STATUS
 		tmdbApikey.ValidStatus = consts.VALID_STATUS
 	} else {
 		tmdbUrl.ValidStatus = consts.INVALID_STATUS
 		tmdbApikey.ValidStatus = consts.INVALID_STATUS
 	}
-
-	if Jackett.CheckHealth(jackettUrl.Value) {
+	if Jackett.ExternalCheckHealth(jackettUrl.Value) {
 		jackettUrl.ValidStatus = consts.VALID_STATUS
 	} else {
 		jackettUrl.ValidStatus = consts.INVALID_STATUS
 	}
 
-	if Prowlarr.CheckHealth(prowlarrUrl.Value) {
+	if Prowlarr.ExternalCheckHealth(prowlarrUrl.Value) {
 		prowlarrUrl.ValidStatus = consts.VALID_STATUS
 	} else {
 		prowlarrUrl.ValidStatus = consts.INVALID_STATUS
@@ -183,4 +211,15 @@ func (*systemConfig) ConfigUpdate(userInfo model.SystemUser, configs []model.Sys
 		}
 	}
 	return nil
+}
+
+func (*systemConfig) MustConfigQueryByKey(key string) string {
+	config := model.SystemConfig{}
+	if err := db.Get().First(&config, "key = ?", key).Error; err != nil {
+		log.Fatal().Err(err).Msg("fail to query system config")
+	}
+	if config.ValidStatus == consts.INVALID_STATUS {
+		log.Fatal().Msg("key invalid: " + key)
+	}
+	return config.Value
 }

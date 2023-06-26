@@ -16,7 +16,7 @@ var Radarr = &radarr{}
 
 type radarr struct{}
 
-func (*radarr) CheckHealth(url, apiKey string) bool {
+func (*radarr) ExternalCheckHealth(url, apiKey string) bool {
 	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/api/v3/health?apikey=%s", url, apiKey), nil)
 	resp, err := utils.GetClient(nil).Do(req)
 	if err != nil {

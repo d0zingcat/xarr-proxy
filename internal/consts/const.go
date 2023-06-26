@@ -27,6 +27,7 @@ const (
 	CHECKPOINT_FILENAME = "CHECKPOINT"
 	STATIC_FILE_DIR     = "resources/static"
 	RULE_FILE_DIR       = "resources/rule"
+	RULE_MAIN_ID        = "00000000000000000000000000000000"
 
 	USER_INFO_CTX_KEY ctxKeySystemUserInfo = 0
 )

@@ -32,7 +32,7 @@ func userLogin(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, ErrInvalidRequest(err))
 		return
 	}
-	token, err := services.SystemUser.Login(req.Username, req.Password)
+	token, err := services.SystemUser.ApiLogin(req.Username, req.Password)
 	if token == "" || err != nil {
 		userWrongPassCnt++
 		render.JSON(w, r, ErrInvalidRequest(err))
@@ -44,7 +44,7 @@ func userLogin(w http.ResponseWriter, r *http.Request) {
 func userLogout(w http.ResponseWriter, r *http.Request) {
 	token := helper.ExtractToken(r)
 	userInfo := r.Context().Value(consts.USER_INFO_CTX_KEY).(model.SystemUser)
-	data := services.SystemUser.Logout(userInfo, token)
+	data := services.SystemUser.ApiLogout(userInfo, token)
 	render.JSON(w, r, data)
 }
 
@@ -68,7 +68,7 @@ func userUpdate(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, ErrInvalidRequest(errors.New("invalid user info")))
 		return
 	}
-	data, err := services.SystemUser.Update(userInfo.(model.SystemUser), req.Username, req.Password)
+	data, err := services.SystemUser.ApiUpdate(userInfo.(model.SystemUser), req.Username, req.Password)
 	if err != nil || !data {
 		render.JSON(w, r, ErrInvalidRequest(err))
 		return

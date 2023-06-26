@@ -12,7 +12,7 @@ var Jackett = &jackett{}
 
 type jackett struct{}
 
-func (*jackett) CheckHealth(url string) bool {
+func (*jackett) ExternalCheckHealth(url string) bool {
 	if url == "" {
 		return false
 	}

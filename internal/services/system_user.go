@@ -32,7 +32,7 @@ func (*systemUserService) comparePass(hash, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(strings.ToLower(password)))
 }
 
-func (s *systemUserService) Login(username, password string) (string, error) {
+func (s *systemUserService) ApiLogin(username, password string) (string, error) {
 	user := new(db.SystemUser)
 	if err := db.Get().First(&user, "username = ?", username).Error; err != nil {
 		return "", err
@@ -50,13 +50,13 @@ func (s *systemUserService) Login(username, password string) (string, error) {
 	return token, nil
 }
 
-func (*systemUserService) Logout(userInfo model.SystemUser, token string) bool {
+func (*systemUserService) ApiLogout(userInfo model.SystemUser, token string) bool {
 	cache.Get().Set(token, true, time.Second*time.Duration(config.Get().TokenBlockTTL))
 	fmt.Println(cache.Get().Items())
 	return true
 }
 
-func (s *systemUserService) Update(userInfo model.SystemUser, username, password string) (bool, error) {
+func (s *systemUserService) ApiUpdate(userInfo model.SystemUser, username, password string) (bool, error) {
 	pass, err := s.generatePass(password)
 	if err != nil {
 		return false, err

@@ -43,6 +43,7 @@ func InitRoutes(filesDir string) {
 	r.Get("/", func(resp http.ResponseWriter, req *http.Request) {
 		http.ServeFile(resp, req, filesDir+"/index.html")
 	})
+	// api route
 	apiRoute := chi.NewRouter()
 	apiRoute.Group(func(r chi.Router) {
 		r.Post("/system/user/login", userLogin)
@@ -61,8 +62,23 @@ func InitRoutes(filesDir string) {
 		r.Get("/system/config/author/list", authorList)
 		r.Get("/system/config/query", configQuery)
 		r.Post("/system/config/update", configUpdate)
+
+		r.Get("/sonarr/title/query", sonarrTitleQuery)
+		r.Post("/sonarr/title/remove", sonarrTitleRemove)
+		r.Post("/sonarr/title/sync", sonarrTitleSync)
+		r.Post("/sonarr/rule/sync", sonarrRuleSync)
+		r.Get("/sonarr/rule/query", sonarrRuleQuery)
+		r.Post("/sonarr/rule/enable", sonarrRuleEnable)
+		r.Post("/sonarr/rule/disable", sonarrRuleDisable)
+
+		r.Post("/tmdb/title/sync", tmdbTitleSync)
+		r.Get("/tmdb/title/query", tmdbTitleQuery)
+		r.Post("/tmdb/title/remove", tmdbTitleRemove)
 	})
 	r.Mount("/api", apiRoute)
+
+	// proxy route
+	r.Get("/sonarr/prowlarr/*", sonarrProwlarrProxy)
 	// httpDir := http.Dir(filesDir)
 	// httpDir := http.Dir(filesDir)
 	// FileServer(r, "/", httpDir)
@@ -179,6 +195,15 @@ func ErrInvalidRequest(err error) render.Renderer {
 		Err:            err,
 		HTTPStatusCode: 400,
 		StatusText:     "Invalid request.",
+		ErrorText:      err.Error(),
+	}
+}
+
+func ErrInternalServer(err error) render.Renderer {
+	return &ErrResponse{
+		Err:            err,
+		HTTPStatusCode: 500,
+		StatusText:     "Internal server error.",
 		ErrorText:      err.Error(),
 	}
 }

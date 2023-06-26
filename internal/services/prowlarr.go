@@ -12,7 +12,7 @@ var Prowlarr = &prowlarr{}
 
 type prowlarr struct{}
 
-func (*prowlarr) CheckHealth(url string) bool {
+func (*prowlarr) ExternalCheckHealth(url string) bool {
 	if url == "" {
 		return false
 	}

@@ -13,18 +13,18 @@ import (
 )
 
 func systemVersion(w http.ResponseWriter, r *http.Request) {
-	v := services.SystemConfig.Version()
+	v := services.SystemConfig.ApiVersion()
 	render.JSON(w, r, v)
 }
 
 func authorList(w http.ResponseWriter, r *http.Request) {
-	v := services.SystemConfig.AuthorList()
+	v := services.SystemConfig.ApiAuthorList()
 	render.JSON(w, r, v)
 }
 
 func configQuery(w http.ResponseWriter, r *http.Request) {
 	// TODO: sonar rename task
-	v := services.SystemConfig.ConfigQuery()
+	v := services.SystemConfig.ApiConfigQuery()
 	render.JSON(w, r, v)
 }
 
@@ -39,7 +39,7 @@ func configUpdate(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, ErrInvalidRequest(errors.New("invalid user info")))
 		return
 	}
-	v := services.SystemConfig.ConfigUpdate(userInfo.(model.SystemUser), []model.SystemConfig(req))
+	v := services.SystemConfig.ApiConfigUpdate(userInfo.(model.SystemUser), []model.SystemConfig(req))
 	// TODO: clear title sync cache
 	render.JSON(w, r, v)
 }

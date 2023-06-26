@@ -23,3 +23,4 @@ go.work
 tmp/
 .vscode/
 .idea/
+db_store/

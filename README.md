@@ -13,6 +13,7 @@ Inspired by [Jproxy](https://github.com/LuckyPuppy514/jproxy).
 - XarrProxy is written in golang while Jproxy uses java.
 - XarrProxy uses toml to manage configs while Jproxy uses JSON.
 - XarrProxy uses bcrypto to handle login/password encryption while Jproxy uses md5.
+- XarrProxy now does not use memory cache.
 
 Also thanks for the following projects, some ideas and designs are borrowed from there:
 

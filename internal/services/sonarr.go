@@ -28,6 +28,14 @@ var Sonarr = &sonarr{}
 
 type sonarr struct{}
 
+func (*sonarr) QueryByToken(token string) []db.SonarrRule {
+	rules := make([]db.SonarrRule, 0)
+	if err := db.Get().Where("token = ? AND valid_status = ?", token, consts.VALID_STATUS).Order("priority").Find(&rules).Error; err != nil {
+		log.Err(err).Msg("fail to query sonarr rules")
+	}
+	return rules
+}
+
 func (*sonarr) ExternalCheckHealth(url, apiKey string) error {
 	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/api/v3/health?apikey=%s", url, apiKey), nil)
 	resp, err := utils.GetClient(nil).Do(req)
@@ -62,7 +70,7 @@ func (*sonarr) ExternalGetSeries() (SonarrSeries, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	log.Info().Msg(utils.DumpResponse(resp))
+	log.Debug().Msg(utils.DumpResponse(resp))
 	series := make(SonarrSeries, 0)
 	if err := json.NewDecoder(resp.Body).Decode(&series); err != nil {
 		return nil, err
@@ -116,6 +124,7 @@ func (*sonarr) GetNeedSyncTMDBTitleTvdbIDs() []int {
 }
 
 func (*sonarr) QueryByTitle(title string) (*db.SonarrTitle, error) {
+	sonarrTitle := &db.SonarrTitle{Title: title}
 	cleanTitleRegex := SystemConfig.MustConfigQueryByKey(consts.CLEAN_TITLE_REGEX)
 	cleanTitle := utils.CleanTitle(title, cleanTitleRegex)
 	sonarrTitleList := make([]*db.SonarrTitle, 0)
@@ -126,16 +135,15 @@ func (*sonarr) QueryByTitle(title string) (*db.SonarrTitle, error) {
 		return nil
 	}
 	if err := fn(title, sonarrTitleList); err != nil {
-		return nil, err
+		return sonarrTitle, err
 	}
-	var sonarrTitle *db.SonarrTitle
 	if len(sonarrTitleList) > 0 {
 		sonarrTitle = sonarrTitleList[0]
 	} else {
 		title = utils.RemoveSeason(title)
 		cleanTitle = utils.CleanTitle(title, cleanTitleRegex)
 		if err := fn(title, sonarrTitleList); err != nil {
-			return nil, err
+			return sonarrTitle, err
 		}
 		if len(sonarrTitleList) > 0 {
 			sonarrTitle = sonarrTitleList[0]
@@ -147,7 +155,7 @@ func (*sonarr) QueryByTitle(title string) (*db.SonarrTitle, error) {
 	return sonarrTitle, nil
 }
 
-func (*sonarr) QueryAll() ([]*db.SonarrTitle, error) {
+func (*sonarr) QueryAll() ([]db.SonarrTitle, error) {
 	subquery1 := db.Get().
 		Model(&db.SonarrTitle{}).
 		Select("main_title, title, clean_title, season_number, monitored").Group("clean_title")
@@ -157,7 +165,7 @@ func (*sonarr) QueryAll() ([]*db.SonarrTitle, error) {
 		Joins("LEFT JOIN tmdb_title AS tt ON st.tvdb_id = tt.tvdb_id").
 		Where("st.sno = ?", 0).
 		Group("tt.title")
-	sonarrTitleList := make([]*db.SonarrTitle, 0)
+	sonarrTitleList := make([]db.SonarrTitle, 0)
 	if err := db.Get().
 		Raw("? UNION ?", subquery1, subquery2).
 		Select("main_title, title, clean_title, season_number").

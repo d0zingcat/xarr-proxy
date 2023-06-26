@@ -33,7 +33,6 @@ func (s *SonarrTitleQueryReq) Bind(r *http.Request) error {
 }
 
 func (s *SonarrTitleDeleteReq) Bind(r *http.Request) error {
-	defaults.SetDefaults(s)
 	return nil
 }
 

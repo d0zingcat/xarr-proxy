@@ -2,8 +2,6 @@ package indexer
 
 import (
 	"bytes"
-	"regexp"
-	"strings"
 
 	"xarr-proxy/internal/api/req"
 	"xarr-proxy/internal/services"
@@ -25,82 +23,17 @@ type IndexService interface {
 	GetIndexerUrl(path string) string
 }
 
-type baseIndexer struct{}
-
-func (b *baseIndexer) GetTitle(key string) string {
-	return utils.RemoveEpisode(key)
-}
-
-func (b *baseIndexer) GetSearchTitle(title string) []string {
-	return []string{}
-}
-
-func (b *baseIndexer) GenerateOffsetKey(requestWrapper *services.RequestWrapper) string {
-	builder := strings.Builder{}
-	builder.WriteString(requestWrapper.GetPath())
-	queryString := requestWrapper.GetQueryString()
-	m := regexp.MustCompile(`(offset=\d+|apikey=\w+)`)
-	queryString = m.ReplaceAllString(queryString, "")
-	builder.WriteString("?" + queryString)
-	return builder.String()
-}
-
-func (b *baseIndexer) CalculateCurrentIndex(offset int, offsetList []int) int {
-	for index, offsetValue := range offsetList {
-		if offsetValue == 0 || offsetValue > offset {
-			return index
-		}
-	}
-	return 0
-}
-
-func (b *baseIndexer) UpdateIndexerRequest(index int, searchTitleList []string, offsetList []int, indexerRequest *req.IndexerReq) {
-	if index > 0 {
-		lastIndex := index - 1
-		title := searchTitleList[index]
-		searchKey := indexerRequest.SearchKey
-		searchKey = strings.ReplaceAll(searchKey, searchTitleList[0], title)
-		if lastIndex > 0 {
-			searchKey = strings.ReplaceAll(searchKey, searchTitleList[lastIndex], title)
-		}
-		indexerRequest.SearchKey = searchKey
-		indexerRequest.Offset = indexerRequest.Offset - offsetList[lastIndex]
-	}
-}
-
-func (b *baseIndexer) UpdateOffsetList(key string, offsetList []int) []int {
-	return offsetList
-}
-
-func (b *baseIndexer) GetOffsetList(key string, size int) []int {
-	offsetList := make([]int, size)
-	return offsetList
-}
-
-func (b *baseIndexer) ExecuteFormatRule(xml string) string {
-	return xml
-}
-
-func (b *baseIndexer) GetIndexerUrl(path string) string {
-	return path
-}
-
-func (b *baseIndexer) ExecuteNewRequest(requestWrapper *services.RequestWrapper) string {
-	return ""
-}
-
-type indexer struct {
-	baseIndexer
+type Indexer struct {
 	service IndexService
 }
 
-func NewIndexerService(service IndexService) *indexer {
-	return &indexer{
+func NewIndexerService(service IndexService) *Indexer {
+	return &Indexer{
 		service: service,
 	}
 }
 
-func (i *indexer) ExecuteNewRequest(requestWrapper *services.RequestWrapper) string {
+func (i *Indexer) ExecuteNewRequest(requestWrapper *services.RequestWrapper) string {
 	path := requestWrapper.GetPath()
 	uStr := i.service.GetIndexerUrl(path) + "?" + requestWrapper.GetQueryString()
 	log.Debug().Msg(uStr)
@@ -116,6 +49,42 @@ func (i *indexer) ExecuteNewRequest(requestWrapper *services.RequestWrapper) str
 	xml := buf.String()
 
 	return xml
+}
+
+func (i Indexer) GetTitle(key string) string {
+	return i.service.GetTitle(key)
+}
+
+func (i Indexer) GetSearchTitle(title string) []string {
+	return i.service.GetSearchTitle(title)
+}
+
+func (i Indexer) GenerateOffsetKey(requestWrapper *services.RequestWrapper) string {
+	return i.service.GenerateOffsetKey(requestWrapper)
+}
+
+func (i Indexer) CalculateCurrentIndex(offset int, offsetList []int) int {
+	return i.service.CalculateCurrentIndex(offset, offsetList)
+}
+
+func (i Indexer) UpdateIndexerRequest(index int, searchTitleList []string, offsetList []int, indexerRequest *req.IndexerReq) {
+	i.service.UpdateIndexerRequest(index, searchTitleList, offsetList, indexerRequest)
+}
+
+func (i Indexer) UpdateOffsetList(key string, offsetList []int) []int {
+	return i.service.UpdateOffsetList(key, offsetList)
+}
+
+func (i Indexer) GetOffsetList(key string, size int) []int {
+	return i.service.GetOffsetList(key, size)
+}
+
+func (i Indexer) ExecuteFormatRule(xml string) string {
+	return i.service.ExecuteFormatRule(xml)
+}
+
+func (i Indexer) GetIndexerUrl(path string) string {
+	return i.service.GetIndexerUrl(path)
 }
 
 //	func (*indexer) GetIndexerSearchReq(r *http.Request) IndexerSearchReq {

@@ -1,9 +1,10 @@
 package indexer
 
 import (
-	xmlUtil "encoding/xml"
 	"regexp"
 	"strings"
+
+	xmlUtil "github.com/mantyr/xmlutils"
 
 	"xarr-proxy/internal/consts"
 	"xarr-proxy/internal/db"

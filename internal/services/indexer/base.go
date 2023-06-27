@@ -94,16 +94,22 @@ type AtomLink struct {
 }
 
 type Item struct {
-	Title       string    `xml:"title"`
-	Description string    `xml:"description"`
-	Guid        string    `xml:"guid"`
-	Prowlarr    string    `xml:"prowlarrindexer"`
-	Comments    string    `xml:"comments"`
-	PubDate     string    `xml:"pubDate"`
-	Size        int       `xml:"size"`
-	Link        string    `xml:"link"`
-	Categories  []int     `xml:"category"`
-	Enclosure   Enclosure `xml:"enclosure"`
+	Title        string        `xml:"title"`
+	Description  string        `xml:"description"`
+	Guid         string        `xml:"guid"`
+	Prowlarr     string        `xml:"prowlarrindexer"`
+	Comments     string        `xml:"comments"`
+	PubDate      string        `xml:"pubDate"`
+	Size         int           `xml:"size"`
+	Link         string        `xml:"link"`
+	Categories   []int         `xml:"category"`
+	Enclosure    Enclosure     `xml:"enclosure"`
+	TorznabAttrs []TorznabAttr `xml:"torznab:attr"`
+}
+
+type TorznabAttr struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value,attr"`
 }
 
 type Enclosure struct {
@@ -112,43 +118,32 @@ type Enclosure struct {
 	Type   string `xml:"type,attr"`
 }
 
+//	type RSS struct {
+//		Channel      Channel `xml:"channel"`
+//		XmlnsAtom    string  `xml:"_xmlns:atom"`
+//		XmlnsTorznab string  `xml:"_xmlns:torznab"`
+//		Version      string  `xml:"_version"`
+//	}
 //
-// type TorznabRss struct {
-// 	RSS RSS `xml:"rss"`
-// }
+//	type Channel struct {
+//		Link  Link   `xml:"link"`
+//		Title string `xml:"title"`
+//		Items []Item `xml:"item"`
+//	}
 //
-// type RSS struct {
-// 	Channel      Channel `xml:"channel"`
-// 	XmlnsAtom    string  `xml:"_xmlns:atom"`
-// 	XmlnsTorznab string  `xml:"_xmlns:torznab"`
-// 	Version      string  `xml:"_version"`
-// }
-//
-// type Channel struct {
-// 	Link  Link   `xml:"link"`
-// 	Title string `xml:"title"`
-// 	Items []Item `xml:"item"`
-// }
-//
-// type Item struct {
-// 	Title           string          `xml:"title"`
-// 	Description     string          `xml:"description"`
-// 	GUID            string          `xml:"guid"`
-// 	Prowlarrindexer Prowlarrindexer `xml:"prowlarrindexer"`
-// 	Comments        string          `xml:"comments"`
-// 	PubDate         string          `xml:"pubDate"`
-// 	Size            string          `xml:"size"`
-// 	Link            string          `xml:"link"`
-// 	Category        []string        `xml:"category"`
-// 	Enclosure       Enclosure       `xml:"enclosure"`
-// 	Attr            []Attr          `xml:"attr"`
-// }
-//
-// type Attr struct {
-// 	Name   string `xml:"_name"`
-// 	Value  string `xml:"_value"`
-// 	Prefix string `xml:"__prefix"`
-// }
+//	type Item struct {
+//		Title           string          `xml:"title"`
+//		Description     string          `xml:"description"`
+//		GUID            string          `xml:"guid"`
+//		Prowlarrindexer Prowlarrindexer `xml:"prowlarrindexer"`
+//		Comments        string          `xml:"comments"`
+//		PubDate         string          `xml:"pubDate"`
+//		Size            string          `xml:"size"`
+//		Link            string          `xml:"link"`
+//		Category        []string        `xml:"category"`
+//		Enclosure       Enclosure       `xml:"enclosure"`
+//	}
+
 //
 // type Enclosure struct {
 // 	URL    string `xml:"_url"`

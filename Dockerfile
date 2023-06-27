@@ -10,7 +10,8 @@ COPY . ./
 
 ENV TZ=Asia/Shanghai PUID=0 PGID=0 UMASK=022 
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /app/arrproxy
+# RUN CGO_ENABLED=0 GOOS=linux go build -o /app/arrproxy
+RUN go build -o /app/arrproxy
 
 EXPOSE 8117
 

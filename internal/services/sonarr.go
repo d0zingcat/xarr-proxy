@@ -128,13 +128,13 @@ func (*sonarr) QueryByTitle(title string) (*db.SonarrTitle, error) {
 	cleanTitleRegex := SystemConfig.MustConfigQueryByKey(consts.CLEAN_TITLE_REGEX)
 	cleanTitle := utils.CleanTitle(title, cleanTitleRegex)
 	sonarrTitleList := make([]*db.SonarrTitle, 0)
-	fn := func(title string, sonarrTitleList []*db.SonarrTitle) error {
-		if err := db.Get().Where("clean_title = ?", cleanTitle).Find(&sonarrTitleList).Error; err != nil {
+	fn := func(title string, sonarrTitleList *[]*db.SonarrTitle) error {
+		if err := db.Get().Where("clean_title = ?", cleanTitle).Find(sonarrTitleList).Error; err != nil {
 			return err
 		}
 		return nil
 	}
-	if err := fn(title, sonarrTitleList); err != nil {
+	if err := fn(title, &sonarrTitleList); err != nil {
 		return sonarrTitle, err
 	}
 	if len(sonarrTitleList) > 0 {
@@ -142,7 +142,7 @@ func (*sonarr) QueryByTitle(title string) (*db.SonarrTitle, error) {
 	} else {
 		title = utils.RemoveSeason(title)
 		cleanTitle = utils.CleanTitle(title, cleanTitleRegex)
-		if err := fn(title, sonarrTitleList); err != nil {
+		if err := fn(title, &sonarrTitleList); err != nil {
 			return sonarrTitle, err
 		}
 		if len(sonarrTitleList) > 0 {
@@ -187,7 +187,7 @@ func (*sonarr) FormatTitle(text string, format string, cleanTitleRegex string, s
 				if cleanTitle == "" {
 					cleanTitle = utils.CleanTitle(sonarrTitle.Title, cleanTitleRegex)
 				}
-				cleanTitle = strings.ReplaceAll(cleanTitle, placeholder, ".?")
+				cleanTitle = regexp.MustCompile(placeholder).ReplaceAllString(cleanTitle, ".?")
 				cleanText := utils.CleanTitle(text, cleanTitleRegex)
 				regex := strings.ReplaceAll(sonarrRule.Regex, cleanTitleKey, cleanTitle)
 				if matched, _ := regexp.MatchString(regex, cleanText); matched {
@@ -223,7 +223,7 @@ func (*sonarr) FormatTitle(text string, format string, cleanTitleRegex string, s
 }
 
 func (*sonarr) Format(text string, format string, tokenRuleMap map[string][]db.SonarrRule) string {
-	tokenRegex := regexp.MustCompile(`"\{([^}]+)\}"`)
+	tokenRegex := regexp.MustCompile(`\{([^}]+)\}`)
 	matches := tokenRegex.FindAllStringSubmatch(format, -1)
 	for _, match := range matches {
 		token := match[1]

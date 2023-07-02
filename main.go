@@ -1,13 +1,14 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 
 	"xarr-proxy/internal/api"
 	"xarr-proxy/internal/auth"
 	"xarr-proxy/internal/cache"
 	"xarr-proxy/internal/config"
-	// "xarr-proxy/internal/consts"
+	"xarr-proxy/internal/consts"
+
 	"xarr-proxy/internal/cron"
 	"xarr-proxy/internal/db"
 	"xarr-proxy/internal/log"
@@ -32,7 +33,7 @@ func Init() {
 }
 
 func main() {
-	// fmt.Printf(consts.LOGO, consts.VERSION)
+	fmt.Printf(consts.LOGO, consts.VERSION)
 
 	Init()
 }

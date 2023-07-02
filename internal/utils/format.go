@@ -80,7 +80,7 @@ func ReplaceTokenOffset(token, value, text string, offset *int) string {
 }
 
 func ReplaceToken(token, value, text string) string {
-	return strings.ReplaceAll(text, token, value)
+	return strings.ReplaceAll(text, "{"+token+"}", value)
 }
 
 // RemoveToken removes a token from a given text.

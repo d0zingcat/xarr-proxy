@@ -57,7 +57,6 @@ func (s *sonarrProwlarrIndexer) ExecuteFormatRule(xml string) string {
 	tokenRuleMap := make(map[string][]db.SonarrRule)
 	matcher := regexp.MustCompile(`\{([^}]+)\}`).FindAllStringSubmatch(format, -1)
 	for _, match := range matcher {
-		log.Debug().Msgf("%v:%v", match[0], match[1])
 		token := match[1]
 		tokenRuleMap[token] = services.Sonarr.QueryByToken(token)
 	}
@@ -81,10 +80,12 @@ func (s *sonarrProwlarrIndexer) ExecuteFormatRule(xml string) string {
 			continue
 		}
 		formatText = services.Sonarr.Format(item.Title, formatText, tokenRuleMap)
-		log.Debug().Msgf("索引器格式化：%s ==> %s", item.Title, formatText)
-		channel.Items[i].Title = formatText
+		if formatText != item.Title {
+			log.Debug().Msgf("索引器格式化：%s ==> %s", item.Title, formatText)
+			channel.Items[i].Title = formatText
+		}
 	}
-	d, err := xmlUtil.MarshalIndent(x, "", "\t")
+	d, err := xmlUtil.Marshal(x)
 	if err != nil {
 		log.Err(err).Msg("fail to marshal to xml string")
 		return xml

@@ -1,0 +1,13 @@
+name: build-latest
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  build-and-publish:
+    uses: ./.github/workflows/build.yml
+    with:
+      image_tags: 'type=raw,value=latest'
+    secrets: inherit
+

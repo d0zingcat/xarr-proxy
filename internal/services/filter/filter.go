@@ -63,7 +63,7 @@ func (i *IndexerFilter) DoFilter(w http.ResponseWriter, r *http.Request) {
 			Msg("first request")
 		index++
 		for index < size && indexerRequest.Limit-count > 0 {
-			log.Debug().Msgf("index %v < size %v, limit: %v, count", index, size, indexerRequest.Limit, count)
+			log.Debug().Msgf("index %v < size %v, limit: %v, count %v", index, size, indexerRequest.Limit, count)
 			// 更新参数
 			offset = offset + count
 			if index == size-1 {

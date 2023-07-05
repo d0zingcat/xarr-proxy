@@ -52,3 +52,7 @@ func (q *qbittorrent) Login(url, username, password string) bool {
 	}
 	return false
 }
+
+func (q *qbittorrent) Rename(url string) {
+	return
+}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -169,7 +170,7 @@ func (*systemConfig) ApiConfigUpdate(userInfo model.SystemUser, configs []model.
 		radarrIndexerFormat.ValidStatus = consts.INVALID_STATUS
 	}
 
-	if Qbittorrent.Login(qbittorrentUrl.Value, qbittorrentUsername.Value, qbittorrentPassword.Value) {
+	if Qbittorrent.ExternalLogin(qbittorrentUrl.Value, qbittorrentUsername.Value, qbittorrentPassword.Value) {
 		qbittorrentUrl.ValidStatus = consts.VALID_STATUS
 		qbittorrentUsername.ValidStatus = consts.VALID_STATUS
 		qbittorrentPassword.ValidStatus = consts.VALID_STATUS
@@ -216,10 +217,12 @@ func (*systemConfig) ApiConfigUpdate(userInfo model.SystemUser, configs []model.
 func (*systemConfig) MustConfigQueryByKey(key string) string {
 	config := model.SystemConfig{}
 	if err := db.Get().First(&config, "key = ?", key).Error; err != nil {
-		log.Fatal().Err(err).Msg("fail to query system config")
+		log.Error().Err(err).Msg("fail to query system config")
+		log.Panic().Err(err)
 	}
 	if config.ValidStatus == consts.INVALID_STATUS {
-		log.Fatal().Msg("key invalid: " + key)
+		log.Error().Msg("key invalid: " + key)
+		log.Panic().Err(errors.New("key invalid: " + key))
 	}
 	return config.Value
 }

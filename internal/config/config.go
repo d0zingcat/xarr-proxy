@@ -15,6 +15,7 @@ type (
 		TokenBlockTTL      int    `json:"token_block_ttl" env:"TOKEN_BLOCK_TTL" envDefault:"604800"`
 		CacheTTL           int    `json:"cache_expire" env:"CACHE_EXPIRE" envDefault:"300"`
 		CachePurgeInterval int    `json:"cache_purge_interval" env:"CACHE_PURGE_INTERVAL" envDefault:"600"`
+		RenameFile         bool   `json:"rename_file" env:"RENAME_FILE" envDefault:"false"`
 	}
 )
 
@@ -30,6 +31,7 @@ var (
 	TokenBlockTTL      int
 	CacheTTL           int
 	CachePurgeInterval int
+	RenameFile         bool
 )
 
 func Init() *Config {
@@ -48,6 +50,7 @@ func Init() *Config {
 	CacheTTL = cfg.CacheTTL
 	CachePurgeInterval = cfg.CachePurgeInterval
 	TokenBlockTTL = cfg.TokenBlockTTL
+	RenameFile = cfg.RenameFile
 
 	return cfg
 }

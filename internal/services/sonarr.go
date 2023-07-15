@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"xarr-proxy/internal/api/req"
 	"xarr-proxy/internal/api/resp"
@@ -34,6 +35,32 @@ func (*sonarr) QueryByToken(token string) []db.SonarrRule {
 		log.Err(err).Msg("fail to query sonarr rules")
 	}
 	return rules
+}
+
+func (*sonarr) ExternalQueryHistory(fallbackTimeSeconds int) (*SonarrHistory, error) {
+	sonarrUrl := SystemConfig.MustConfigQueryByKey(consts.SONARR_URL)
+	sonarrApiKey := SystemConfig.MustConfigQueryByKey(consts.SONARR_API_KEY)
+	queryTime := time.Now().UTC().Add(time.Second * time.Duration(fallbackTimeSeconds)).Format("2006-01-02T15:04:05Z")
+
+	values := url.Values{}
+	values.Add("apikey", sonarrApiKey)
+	values.Add("eventType", "1")
+	values.Add("date", queryTime)
+
+	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/api/v3/history/since?%s", sonarrUrl, values.Encode()), nil)
+	resp, err := utils.GetClient(nil).Do(req)
+	if err != nil {
+		log.Err(err).Msg("fail to get series for sonarr")
+		return nil, err
+	}
+	defer resp.Body.Close()
+	log.Debug().Msg(utils.DumpRequest(*req))
+	log.Debug().Msg(utils.DumpResponse(resp))
+	history := make(SonarrHistory, 0)
+	if err := json.NewDecoder(resp.Body).Decode(&history); err != nil {
+		return nil, err
+	}
+	return &history, nil
 }
 
 func (*sonarr) ExternalCheckHealth(url, apiKey string) error {

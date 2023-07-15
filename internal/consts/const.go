@@ -28,6 +28,8 @@ const (
 	STATIC_FILE_DIR     = "resources/static"
 	RULE_FILE_DIR       = "resources/rule"
 	RULE_MAIN_ID        = "00000000000000000000000000000000"
+	QBITTORRENT         = "qBittorrent"
+	TRANSMISSION        = "Transmission"
 
 	USER_INFO_CTX_KEY ctxKeySystemUserInfo = 0
 )

@@ -14,6 +14,59 @@ type (
 	}
 	ResponseWrapper struct{}
 	// sonarr
+	SonarrHistory []struct {
+		EpisodeID   int    `json:"episodeId"`
+		SeriesID    int    `json:"seriesId"`
+		SourceTitle string `json:"sourceTitle"`
+		Languages   []struct {
+			ID   int    `json:"id"`
+			Name string `json:"name"`
+		} `json:"languages"`
+		Quality struct {
+			Quality struct {
+				ID         int    `json:"id"`
+				Name       string `json:"name"`
+				Source     string `json:"source"`
+				Resolution int    `json:"resolution"`
+			} `json:"quality"`
+			Revision struct {
+				Version  int  `json:"version"`
+				Real     int  `json:"real"`
+				IsRepack bool `json:"isRepack"`
+			} `json:"revision"`
+		} `json:"quality"`
+		CustomFormats []struct {
+			ID   int    `json:"id"`
+			Name string `json:"name"`
+		} `json:"customFormats"`
+		CustomFormatScore   int       `json:"customFormatScore"`
+		QualityCutoffNotMet bool      `json:"qualityCutoffNotMet"`
+		Date                time.Time `json:"date"`
+		DownloadID          string    `json:"downloadId"`
+		EventType           string    `json:"eventType"`
+		Data                struct {
+			Indexer            string    `json:"indexer"`
+			NzbInfoURL         string    `json:"nzbInfoUrl"`
+			ReleaseGroup       string    `json:"releaseGroup"`
+			Age                string    `json:"age"`
+			AgeHours           string    `json:"ageHours"`
+			AgeMinutes         string    `json:"ageMinutes"`
+			PublishedDate      time.Time `json:"publishedDate"`
+			DownloadClient     string    `json:"downloadClient"`
+			DownloadClientName string    `json:"downloadClientName"`
+			Size               string    `json:"size"`
+			DownloadURL        string    `json:"downloadUrl"`
+			GUID               string    `json:"guid"`
+			TvdbID             string    `json:"tvdbId"`
+			TvRageID           string    `json:"tvRageId"`
+			Protocol           string    `json:"protocol"`
+			CustomFormatScore  string    `json:"customFormatScore"`
+			SeriesMatchType    string    `json:"seriesMatchType"`
+			ReleaseSource      string    `json:"releaseSource"`
+			TorrentInfoHash    string    `json:"torrentInfoHash"`
+		} `json:"data"`
+		ID int `json:"id"`
+	}
 	SonarrSeries []struct {
 		Title             string                  `json:"title"`
 		AlternateTitles   []SonarrAlternateTitles `json:"alternateTitles"`

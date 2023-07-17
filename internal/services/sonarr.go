@@ -452,3 +452,11 @@ func (*sonarr) ApiSwitchValidStatus(req req.SonarrRuleSwitchValidStatusReq, stat
 	}
 	return true, nil
 }
+
+func (*sonarr) ApiTokenList() (any, error) {
+	tokenList := []string{}
+	if err := db.Get().Model(&db.SonarrRule{}).Distinct().Pluck("token", &tokenList).Error; err != nil {
+		return nil, err
+	}
+	return tokenList, nil
+}

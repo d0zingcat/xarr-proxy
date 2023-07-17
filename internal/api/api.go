@@ -68,6 +68,7 @@ func InitRoutes(filesDir string) {
 		r.Post("/sonarr/title/sync", sonarrTitleSync)
 		r.Post("/sonarr/rule/sync", sonarrRuleSync)
 		r.Get("/sonarr/rule/query", sonarrRuleQuery)
+		r.Get("/sonarr/rule/token/list", sonarrRuleTokenQuery)
 		r.Post("/sonarr/rule/enable", sonarrRuleEnable)
 		r.Post("/sonarr/rule/disable", sonarrRuleDisable)
 

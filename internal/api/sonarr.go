@@ -119,3 +119,12 @@ func sonarrRuleDisable(w http.ResponseWriter, r *http.Request) {
 	}
 	render.JSON(w, r, v)
 }
+
+func sonarrRuleTokenQuery(w http.ResponseWriter, r *http.Request) {
+	v, err := services.Sonarr.ApiTokenList()
+	if err != nil {
+		render.JSON(w, r, ErrInternalServer(err))
+		return
+	}
+	render.JSON(w, r, v)
+}

@@ -48,12 +48,7 @@ func (i *IndexerFilter) DoFilter(w http.ResponseWriter, r *http.Request) {
 		offsetList := i.Service.GetOffsetList(offsetKey, size)
 		// 计算当前标题下标
 		index := i.Service.CalculateCurrentIndex(offset, offsetList)
-		// 更新参数
-		i.Service.UpdateIndexerRequest(index, searchTitleList, offsetList, indexerRequest)
-		UpdateRequestWrapper(indexerRequest, requestWrapper)
-		// 请求
-		xml = i.Service.ExecuteNewRequest(requestWrapper)
-		count := utils.XmlCount(xml)
+		count := 0
 		log.Debug().
 			Any("title", title).
 			Any("searchTitleList", searchTitleList).
@@ -61,32 +56,44 @@ func (i *IndexerFilter) DoFilter(w http.ResponseWriter, r *http.Request) {
 			Any("offsetList", offsetList).
 			Any("index", index).
 			Msg("first request")
-		index++
-		for index < size && indexerRequest.Limit-count > 0 {
-			log.Debug().Msgf("index %v < size %v, limit: %v, count %v", index, size, indexerRequest.Limit, count)
-			// 更新参数
-			offset = offset + count
-			if index == size-1 {
-				if indexerRequest.SeasonNumber != "" && offsetList[index-1] < indexerRequest.Limit {
-					indexerRequest.SeasonNumber = ""
-					indexerRequest.EpisodeNumber = ""
+		for {
+			if size > 1 && index == size-1 {
+				// 已查询到的结果数量少于 8 则去除季集信息尝试查询
+				if offset < 8 {
+					// 只查询 limit - 1 条记录
+					indexerRequest.Limit = indexerRequest.Limit - 1
+					if indexerRequest.SeasonNumber != "" {
+						indexerRequest.SeasonNumber = ""
+						indexerRequest.EpisodeNumber = ""
+					} else {
+						indexerRequest.SearchKey = utils.RemoveSeasonEpisode(indexerRequest.SearchKey)
+					}
 				} else {
 					break
 				}
 			}
-			indexerRequest.Offset = offset
-			indexerRequest.Limit = indexerRequest.Limit - count
-			offsetList[index-1] = offset
-			i.Service.UpdateOffsetList(offsetKey, offsetList)
+			// 请求
 			i.Service.UpdateIndexerRequest(index, searchTitleList, offsetList, indexerRequest)
 			UpdateRequestWrapper(indexerRequest, requestWrapper)
-			// 重新请求
 			newXml := i.Service.ExecuteNewRequest(requestWrapper)
 			count = utils.XmlCount(newXml)
-			if count > 0 {
+			if count > 0 || len(xml) == 0 {
 				xml = utils.XmlMerge(xml, newXml)
 			}
 			index++
+			if index >= size {
+				break
+			}
+			// 更新参数
+			offset = offset + count
+			indexerRequest.Offset = offset
+			indexerRequest.Limit = indexerRequest.Limit - count
+			offsetList[index] = offset
+			i.Service.UpdateOffsetList(offsetKey, offsetList)
+
+			if indexerRequest.Limit-count <= 0 {
+				break
+			}
 		}
 	} else {
 		xml = i.Service.ExecuteNewRequest(requestWrapper)

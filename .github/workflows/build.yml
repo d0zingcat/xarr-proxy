@@ -47,6 +47,16 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ github.repository }}
           tags: ${{ inputs.image_tags }}
 
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: production-files
+          repo: d0zingcat/jproxy-admin
+          workflow: build.yml
+          path: ./resources/static
+          search_artifacts: true
+
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image for UI

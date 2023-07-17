@@ -409,6 +409,7 @@ func (*sonarr) ApiRuleSync() (any, error) {
 			Author:      rule.Author,
 			ValidStatus: consts.VALID_STATUS,
 		})
+		// FIXME: 禁用的规则重新导入时会被启用
 	}
 	if err := db.Get().Clauses(clause.OnConflict{
 		UpdateAll: true,
